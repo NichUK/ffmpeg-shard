@@ -136,6 +136,22 @@ namespace FFmpegSharp.Interop.Format
 
         public int use_wallclock_as_timestamps;
 
+        public int avoid_negative_ts;
+
+        public int avio_flags;
+
+        public AVDurationEstimationMethod duration_estimation_method;
+
+        public uint skip_initial_bytes;
+
+        public uint correct_ts_overflow;
+
+        public int seek2any;
+
+        public int flush_packets;
+
+        public int probe_score;
+
         public AVPacketList* packet_buffer;
         public AVPacketList* packet_buffer_end;
 
@@ -149,9 +165,11 @@ namespace FFmpegSharp.Interop.Format
 
         public int raw_packet_buffer_remaining_size;
 
-        public int avio_flags;
+        public Int64 offset;
 
-        public AVDurationEstimationMethod duration_estimation_method;
+        public AVRational offset_timebase;
+
+        public int io_repositioned;
     };
 
     [Flags]
