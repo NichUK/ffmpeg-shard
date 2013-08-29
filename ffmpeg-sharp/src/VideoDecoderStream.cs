@@ -127,7 +127,7 @@ namespace FFmpegSharp
         {
             // decode video frame
             bool frameFinished = false;
-            int byteCount = FFmpeg.avcodec_decode_video(ref m_avCodecCtx, m_avFrame, out frameFinished, (byte*)packet.data, packet.size);
+            int byteCount = FFmpeg.avcodec_decode_video2(ref m_avCodecCtx, m_avFrame, out frameFinished, ref packet);
             if (byteCount < 0)
                 throw new DecoderException("Couldn't decode frame");
 

@@ -12,10 +12,10 @@ namespace FFmpegSharp.Interop
         //void av_log(void*, int level, const char *fmt, ...);
         //void av_vlog(void*, int level, const char *fmt, va_list);
 
-        [DllImport(FFmpeg.AVUTIL_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(FFmpeg.AVUTIL_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_log_get_level();
 
-        [DllImport(FFmpeg.AVUTIL_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(FFmpeg.AVUTIL_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void av_log_set_level(int level);
         //void av_log_set_callback(void (*)(void*, int, const char*, va_list));
         //void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);

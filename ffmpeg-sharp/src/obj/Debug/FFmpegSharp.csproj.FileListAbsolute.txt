@@ -1,0 +1,13 @@
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\avcodec-54.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\avdevice-54.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\avfilter-3.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\avformat-54.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\avutil-51.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\postproc-52.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\swresample-0.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\swscale-2.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\obj\Debug\FFmpegSharp.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\obj\Debug\FFmpegSharp.pdb
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\FFmpegSharp.dll
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\FFmpegSharp.pdb
+G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\obj\Debug\FFmpegSharp.csprojResolveAssemblyReference.cache

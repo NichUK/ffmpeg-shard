@@ -35,80 +35,80 @@ namespace FFmpegSharp.Interop
     [SuppressUnmanagedCodeSecurity]
     public static unsafe partial class FFmpeg
     {
-        public const string SWSCALE_DLL_NAME = "swscale-0.dll";
+        public const string SWSCALE_DLL_NAME = "swscale-2.dll";
 
         #region Functions
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_freeContext(SwsContext* swsContext);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsContext* sws_getContext(int srcW, int srcH, PixelFormat srcFormat, int dstW, int dstH, PixelFormat dstFormat,
                                                         SwsFlags flags, SwsFilter* srcFilter, SwsFilter* dstFilter, double* param);
 
         /// <returns>0 on success, -1 on failure</returns>
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int sws_scale(SwsContext* context, byte** src, int* srcStride, int srcSliceY,
                                            int srcSliceH, byte** dst, int* dstStride);
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         [Obsolete]
         public static extern int sws_scale_ordered(SwsContext* context, byte** src, int* srcStride, int srcSliceY,
                                                    int srcSliceH, byte** dst, int dstStride);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int sws_setColorspaceDetails(SwsContext* c, int* inv_table, int srcRange, int* table, int dstRange, 
                                                           int brightness, int contrast, int saturation);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int sws_getColorspaceDetails(SwsContext* c, int** inv_table, int* srcRange, int** table, int* dstRange, 
                                                           int* brightness, int* contrast, int* saturation);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsVector* sws_getGaussianVec(double variance, double quality);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsVector* sws_getConstVec(double c, int length);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsVector* sws_getIdentityVec();
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_scaleVec(SwsVector* a, double scalar);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_normalizeVec(SwsVector* a, double height);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_convVec(SwsVector* a, SwsVector* b);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_addVec(SwsVector* a, SwsVector* b);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_subVec(SwsVector* a, SwsVector* b);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_shiftVec(SwsVector* a, int shift);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsVector* sws_cloneVec(SwsVector* a);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_printVec(SwsVector* a);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_freeVec(SwsVector* a);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsFilter* sws_getDefaultFilter(float lumaGBlur, float chromaGBlur,
                                                              float lumaSarpen, float chromaSharpen,
                                                              float chromaHShift, float chromaVShift,
                                                              int verbose);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void sws_freeFilter(SwsFilter* filter);
 
-        [DllImport(SWSCALE_DLL_NAME)]
+        [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern SwsContext* sws_getCachedContext(SwsContext* context, int srcW, int srcH, PixelFormat srcFormat,
                                                               int dstW, int dstH, int dstFormat, SwsFlags flags, SwsFilter* srcFilter, 
                                                               SwsFilter* dstFilter, double* param);

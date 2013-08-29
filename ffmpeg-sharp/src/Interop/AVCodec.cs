@@ -40,38 +40,38 @@ namespace FFmpegSharp.Interop
 
         #region "Functions"
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern ReSampleContext* audio_resample_init(int output_channels, int input_channels,
                                                     int output_rate, int input_rate);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int audio_resample(ref ReSampleContext pResampleContext, [In, Out]short[] output, [In, Out]short[] intput, int nb_samples);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void audio_resample_close(ref ReSampleContext pResampleContext);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVResampleContext* av_resample_init(int out_rate, int in_rate, int filter_length, int log2_phase_count, int linear, double cutoff);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_resample(ref AVResampleContext pAVResampleContext, [In, Out]short[] dst, [In, Out]short[] src,
                                               ref int consumed, int src_size, int dst_size, int udpate_ctx);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void av_resample_compensate(ref AVResampleContext pAVResampleContext, int sample_delta, int compensation_distance);
 
         /// <summary>
         /// Don't call this method, use AVResampleContext.Dispose();
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void av_resample_close(ref AVResampleContext pAVResampleContext);
 
 #if LIBAVCODEC_51
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern ImgReSampleContext* img_resample_init(int output_width, int output_height,
                                       int input_width, int input_height);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern ImgReSampleContext* img_resample_full_init(int owidth, int oheight,
                                       int iwidth, int iheight,
                                       int topBand, int bottomBand,
@@ -79,10 +79,10 @@ namespace FFmpegSharp.Interop
                                       int padtop, int padbottom,
                                       int padleft, int padright);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void img_resample(ref ImgReSampleContext pImgReSampleContext, ref AVPicture output, ref AVPicture input);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void img_resample_close(ref ImgReSampleContext pImgReSampleContext);
 
 #endif
@@ -95,14 +95,14 @@ namespace FFmpegSharp.Interop
         /// <param name="width">the width of the picture</param>
         /// <param name="height">the height of the picture</param>
         /// <returns>0 on success, &lt0 if invalid</returns>        
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avpicture_alloc(out AVPicture picture, PixelFormat pix_fmt, int width, int height);
 
         /// <summary>
         /// Free a picture previously allocated by avpicture_alloc()
         /// </summary>
         /// <param name="pAVPicture"></param>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avpicture_free(ref AVPicture pAVPicture);
 
         /// <summary>
@@ -120,10 +120,10 @@ namespace FFmpegSharp.Interop
         /// <param name="width">The width of the image in pixels </param>
         /// <param name="height">The height of the image in pixels</param>
         /// <returns>Size of the image data in bytes</returns> 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avpicture_fill(out AVPicture pAVPicture, byte[] ptr, PixelFormat pix_fmt, int width, int height);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avpicture_layout(AVPicture* src, PixelFormat pix_fmt, int width, int height,
                                                   [In,Out]byte[] dest, int dest_size);
 
@@ -135,24 +135,24 @@ namespace FFmpegSharp.Interop
         /// <param name="width">the width of the image</param>
         /// <param name="height">the height of the image</param>
         /// <returns>Image data size in bytes</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avpicture_get_size(PixelFormat pix_fmt, int width, int height);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_get_chroma_sub_sample(PixelFormat pix_fmt, out int h_shift, out int v_shift);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         [return: MarshalAs(UnmanagedType.LPStr)]
         public static extern string avcodec_get_pix_fmt_name(PixelFormat pix_fmt);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_set_dimensions(ref AVCodecContext pAVCodecContext, int width, int height);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PixelFormat avcodec_get_pix_fmt(string name);
 
         /// <returns>Returns a fourcc value</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern uint avcodec_pix_fmt_to_codec_tag(PixelFormat p);
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace FFmpegSharp.Interop
         /// avcodec_get_fix_fmt_loss() informs you about the various types of losses
         /// which will occur when converting from one pixel format to another.
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern FF_LOSS avcodec_get_pix_fmt_loss(int dst_pix_fmt, int src_pix_fmt, int has_alpha);
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace FFmpegSharp.Interop
         /// <param name="has_alpha">Whether the source pixel format alpha channel is used.</param>
         /// <param name="loss_ptr">Combination of flags informing you what kind of losses will occur.</param>
         /// <returns>The best pixel format to convert to or -1 if none was found.</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_find_best_pix_fmt(int pix_fmt_mask, int src_pix_fmt, int has_alpha, out int loss_ptr);
 
         /// <summary>
@@ -207,21 +207,21 @@ namespace FFmpegSharp.Interop
         /// <remarks>
         /// Meaningful values for obtaining a pixel format info vary from 0 to PIX_FMT_NB -1.
         /// </remarks>
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void avcodec_pix_fmt_string(char* buf, int buf_size, PixelFormat pix_fmt);
 
         /// <summary>
         /// Tell if an image really has transparent alpha values.
         /// </summary>
         /// <returns>ored mask of FF_ALPHA_xxx constants</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern FF_ALPHA img_get_alpha_info(ref AVPicture pAVPicture, PixelFormat pix_fmt, int width, int height);
 
 #if LIBAVCODEC_51
         /// <summary>
         /// Convert among pixel formats
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int img_convert(ref AVPicture dst, PixelFormat dst_pix_fmt,
                                              ref AVPicture src, PixelFormat src_pix_fmt,
                                              int width, int height);
@@ -231,7 +231,7 @@ namespace FFmpegSharp.Interop
         /// Deinterlace a picture
         /// </summary>
         /// <returns>If not supported, -1</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avpicture_deinterlace(ref AVPicture dst, ref AVPicture src,
                             int pix_fmt, int width, int height);
 
@@ -239,14 +239,14 @@ namespace FFmpegSharp.Interop
         /// returns LIBAVCODEC_VERSION_INT constant
         /// </summary>
         /// <returns></returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern uint avcodec_version();
 
         /// <summary>
         /// returns LIBAVCODEC_BUILD constant
         /// </summary>
         /// <returns></returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern uint avcodec_build();
 
         /// <summary>
@@ -254,10 +254,10 @@ namespace FFmpegSharp.Interop
         /// 
         /// Warning: This function must be called before any other libavcodec function.
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_init();
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_register(ref AVCodec pAVCodec);
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace FFmpegSharp.Interop
         /// </summary>
         /// <param name="id">CodecID of the requested encoder</param>
         /// <returns>An encoder if one was found, NULL otherwise</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVCodec* avcodec_find_encoder(AVCodecID id);
 
         /// <summary>
@@ -273,10 +273,10 @@ namespace FFmpegSharp.Interop
         /// </summary>
         /// <param name="name">Name of the requested encoder</param>
         /// <returns>An encoder if one was found, NULL otherwise</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVCodec* avcodec_find_encoder_by_name(string name);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVCodec* avcodec_find_decoder(AVCodecID id);
 
         /// <summary>
@@ -284,10 +284,10 @@ namespace FFmpegSharp.Interop
         /// </summary>
         /// <param name="name">Name of the requested decoder</param>
         /// <returns>A decoder if one was found, NULL otherwise</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVCodec* avcodec_find_decoder_by_name(string mame);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_string(string name, int buf_size,
                     ref AVCodecContext pAVCodeContext, int encode);
 
@@ -297,38 +297,38 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVCodecContext">
         /// The AVCodecContext of which the fields should be set to default values.
         /// </param>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_get_context_defaults(ref AVCodecContext pAVCodecContext);
 
         /// <summary>
         /// Allocates an AVCodecContext and sets its fields to default values.
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVCodecContext* avcodec_alloc_context();
 
         /// <summary>
         /// Sets the fields of the given AVFrame to default values.
         /// </summary>
         /// <param name="pAVFrame"></param>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_get_frame_defaults(ref AVFrame pAVFrame);
 
         /// <summary>
         /// Allocates a AVFrame and sets its fields to default values.
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern AVFrame* avcodec_alloc_frame();
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_default_get_buffer(ref AVCodecContext pAVCodecContext, ref AVFrame pAVFrame);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_default_release_buffer(ref AVCodecContext pAVCodecContext, ref AVFrame pAVFrame);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_default_reget_buffer(ref AVCodecContext pAVCodecContext, ref AVFrame pAVFrame);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_align_dimensions(ref AVCodecContext pAVCodecContext, ref int width, ref int height);
 
         /// <summary>
@@ -340,24 +340,24 @@ namespace FFmpegSharp.Interop
         /// <param name="width">Width of the picture</param>
         /// <param name="height">Height of the picture</param>
         /// <returns>Zero if valid, a negative value if invalid</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_check_dimensions(object av_log_ctx, uint width, uint height);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PixelFormat avcodec_default_get_format(ref AVCodecContext pAVCodecContext, ref PixelFormat fmt);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_thread_init(ref AVCodecContext pAVCodecContext, int thread_count);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_thread_free(ref AVCodecContext pAVCodecContext);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_thread_execute(ref AVCodecContext pAVCodecContext,
                                 [MarshalAs(UnmanagedType.FunctionPtr)]FuncCallback func,
                                 void** arg, ref int ret, int count);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_default_execute(ref AVCodecContext pAVCodecContext,
                                [MarshalAs(UnmanagedType.FunctionPtr)]FuncCallback func,
                                void** arg, ref int ret, int count);
@@ -389,10 +389,10 @@ namespace FFmpegSharp.Interop
         /// <seealso cref="avcodec_alloc_context"/>
         /// <seealso cref="avcodec_find_decoder"/>
         /// <seealso cref="avcodec_find_encoder"/>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_open(ref AVCodecContext pAVCodecContext, AVCodec* pAVCodec);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         [Obsolete("Depreciated, use avcodec_decode_audio2() instead")]
         public static extern int avcodec_decode_audio(ref AVCodecContext pAVCodecContext, [In, Out]short[] samples,
                                                         ref int frame_size_ptr, byte[] buf, int buf_size);
@@ -441,13 +441,13 @@ namespace FFmpegSharp.Interop
         /// <param name="buf_size">The input buffer size in bytes</param>
         /// <returns>On error a negative value is returned,otherwise the number of bytes 
         /// used or zero if no frame could be decompressed</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_decode_audio2(ref AVCodecContext avctx, [In, Out]short[] samples,
                                                         ref int frame_size_ptr, byte[] buf, int buf_size);
 
         /// <summary>
         /// Decodes a video frame from buf into picture.
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public unsafe static extern int avcodec_decode_audio2(ref AVCodecContext avctx, short* samples,
                                                         ref int frame_size_ptr, byte* buf, int buf_size);
 
@@ -482,16 +482,15 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVCodecContext">The codec context</param>
         /// <param name="pAVFrame">The AVFrame in which the decoded video frame will be stored</param>
         /// <param name="got_picture_ptr">True if a frame could be decompressed</param>
-        /// <param name="buf">The input buffer</param>
-        /// <param name="buf_size">The size of the input buffer in bytes</param>
+        /// <param name="packet">The input buffer</param>
         /// <returns>
         /// On error a negative value is returned, otherwise the number of bytes
         /// used or zero if no frame could be decompressed.
         /// </returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
-        public static extern int avcodec_decode_video(ref AVCodecContext pAVCodecContext, ref AVFrame pAVFrame,
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int avcodec_decode_video2(ref AVCodecContext pAVCodecContext, ref AVFrame pAVFrame,
                                                       [MarshalAs(UnmanagedType.Bool)]out bool got_picture_ptr,
-                                                      byte* buf, int buf_size);
+                                                      ref AVPacket packet);
 
         /// <summary>Decodes a video frame from buf into picture.
         /// The avcodec_decode_video() function decodes a video frame from the input
@@ -518,13 +517,12 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVCodecContext">The codec context</param>
         /// <param name="pAVFrame">The AVFrame in which the decoded video frame will be stored</param>
         /// <param name="got_picture_ptr">True if a frame could be decompressed</param>
-        /// <param name="buf">The input buffer</param>
-        /// <param name="buf_size">The size of the input buffer in bytes</param>
+        /// <param name="packet">The input buffer</param>
         /// <returns></returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
-        public static extern int avcodec_decode_video(ref AVCodecContext pAVCodecContext, AVFrame* pAVFrame,
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int avcodec_decode_video2(ref AVCodecContext pAVCodecContext, AVFrame* pAVFrame,
                                                       [MarshalAs(UnmanagedType.Bool)]out bool got_picture_ptr,
-                                                      byte* buf, int buf_size);
+                                                      ref AVPacket packet);
 
         /// <summary>
         /// Decode a subtitle message. If no subtitle could be decompressed,
@@ -538,11 +536,11 @@ namespace FFmpegSharp.Interop
         /// <returns>
         /// Return -1 if error, otherwise return the number of bytes used.
         /// </returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_decode_subtitle(ref AVCodecContext pAVCodecContext, ref AVSubtitle pAVSubtitle,
                                            [MarshalAs(UnmanagedType.Bool)]out bool got_sub_ptr, byte[] buf, int buf_size);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_parse_frame(ref AVCodecContext pAVCodecContext,
                                             ref byte[] pdata,
                                             ref int data_size_ptr, byte[] buf, int buf_size);
@@ -562,7 +560,7 @@ namespace FFmpegSharp.Interop
         /// <param name="samples">The input buffer containing the samples</param>
         /// <returns>On error a negative value is returned, on success zero or the number 
         /// of bytes used from the input buffer.</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_encode_audio(ref AVCodecContext pAVCodecContext, [In, Out]byte[] buf, int buf_size,
                                             short[] samples);
 
@@ -581,7 +579,7 @@ namespace FFmpegSharp.Interop
         /// <param name="samples">The input buffer containing the samples</param>
         /// <returns>On error a negative value is returned, on success zero or the number 
         /// of bytes used from the input buffer.</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_encode_audio(ref AVCodecContext pAVCodecContext, byte* buf, int buf_size, short* samples);
 
         /// <summary>
@@ -598,27 +596,27 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVFrame">The input picture to encode</param>
         /// <returns>On error a negative value is returned, on success zero or the number
         /// of bytes used from the input buffer.</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_encode_video(ref AVCodecContext pAVCodecContext, [In, Out]byte[] buf, int buf_size,
                                             ref AVFrame pAVFrame);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_encode_subtitle(ref AVCodecContext pAVCodecContext, [In, Out]byte[] buf, int buf_size,
                                             ref AVSubtitle pAVSubtitle);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_close(ref AVCodecContext pAVCodecContext);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_register_all();
 
         /// <summary>
         /// Flush buffers, should be called when seeking or when switching to a different stream 
         /// </summary>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_flush_buffers(ref AVCodecContext pAVCodecContext);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avcodec_default_free_buffers(ref AVCodecContext pAVCodecContext);
 
         /// <summary>
@@ -626,7 +624,7 @@ namespace FFmpegSharp.Interop
         /// </summary>
         /// <param name="pict_type">The picture type</param>
         /// <returns>A single character representing the picture type</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern char av_get_pict_type_char(PictureType pict_type);
 
@@ -635,94 +633,94 @@ namespace FFmpegSharp.Interop
         /// </summary>
         /// <param name="codec_id">The codec</param>
         /// <returns>Number of bits per sample or zero if unknown for the given codec</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_get_bits_per_sample(AVCodecID codec_id);
 
         /// <summary>Returns sample format bits per sample.</summary>
         /// <param ref="sample_fmt">the sample format</param>
         /// <returns>Number of bits per sample or zero if unknown for the given sample format.</returns>
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_get_bits_per_sample_format(SampleFormat sample_fmt);
 
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern AVCodecParser* av_parser_next(AVCodecParser* c);
 
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void av_register_codec_parser(ref AVCodecParser pAVcodecParser);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVCodecParserContext* av_parser_init(AVCodecID codec_id);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_parser_parse(ref AVCodecParserContext pAVCodecParserContext,
                                                 ref AVCodecContext pAVCodecContext,
                             ref byte[] poutbuf, ref int poutbuf_size,
                             byte[] buf, int buf_size, long pts, long dts);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_parser_change(ref AVCodecParserContext pAVCodecParserContext,
                                                 ref AVCodecContext pAVCodecContext,
                             ref byte[] poutbuf, ref int poutbuf_size,
                             byte[] buf, int buf_size, int keyframe);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void av_parser_close(ref AVCodecParserContext pAVCodecParserContext);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void av_register_bitstream_filter(ref AVBitStreamFilter pAVBitStreamFilter);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVBitStreamFilter av_bitstream_filter_init(
                                         string name);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int av_bitstream_filter_filter(ref AVBitStreamFilterContext pAVBitStreamFilterContext,
                                         ref AVCodecContext pAVCodecContext,
                                         string args,
                                         ref byte[] poutbuf,
                                         ref int poutbuf_size, byte[] buf, int buf_size, int keyframe);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void av_bitstream_filter_close(ref AVBitStreamFilterContext pAVBitStreamFilterContext);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVBitStreamFilter* av_bitstream_filter_next(AVBitStreamFilter* f);
 
 #if !LIBAVCODEC_51
         ///<summary>Copy image 'src' to 'dst'.</summary>
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void av_picture_copy(ref AVPicture dst, ref AVPicture src,
                                                   int pix_fmt, int width, int height);
 
         ///<summary>Crop image top and left side.</summary>
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(ZeroTrueBoolMarshaller))]
         public static extern bool av_picture_crop(ref AVPicture dst, ref AVPicture src,
                                                  int pix_fmt, int top_band, int left_band);
 
         ///<summary>Pad image.</summary>
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(ZeroTrueBoolMarshaller))]
         public static extern bool av_picture_pad(ref AVPicture dst, ref AVPicture src, int height,
                                                 int width, int pix_fmt, int padtop, int padbottom,
                                                 int padleft, int padright, int[] color);
 #else
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void img_copy(ref AVPicture dst, ref AVPicture src,
                             PixelFormat pix_fmt, int width, int height);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int img_crop(ref AVPicture dst, ref AVPicture stc,
                             int pix_fmt, int top_band, int left_band);
 
-        [DllImport(AVCODEC_DLL_NAME, CharSet = CharSet.Ansi)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int img_pad(ref AVPicture dst, ref AVPicture src,
                             int height, int width, int pix_fmt, int padtop, int padbottom,
                             int padleft, int padright, ref int color);
 #endif
 
 #if !LIBAVCODEC_51
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern uint av_xiphlacing(string s, uint v);
 
         /**
@@ -736,7 +734,7 @@ namespace FFmpegSharp.Interop
          * @param[in,out] height_ptr pointer to the variable which will contain the detected
          * frame height value
          */
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int av_parse_video_frame_size(ref int width_ptr, ref int height_ptr,
                                        string str);
 
@@ -749,17 +747,17 @@ namespace FFmpegSharp.Interop
          * @param[in,out] frame_rate pointer to the AVRational which will contain the detected
          * frame rate
          */
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int av_parse_video_frame_rate(ref AVRational frame_rate,
                                       string str);
 #endif
 
         #endregion
 
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void av_init_packet(ref AVPacket pkt);
 
-        [DllImport(AVCODEC_DLL_NAME)]
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void av_free_packet(ref AVPacket pkt);
 
 

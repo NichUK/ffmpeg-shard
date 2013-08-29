@@ -82,9 +82,9 @@ namespace FFmpegSharp.Interop.Format
             }
         }
 
-        public long start_time;
+        public Int64 start_time;
 
-        public long duration;
+        public Int64 duration;
 
         public int bit_rate;
 
@@ -116,7 +116,7 @@ namespace FFmpegSharp.Interop.Format
 
         public AVDictionary* metadata;
 
-        public long start_time_realtime;
+        public Int64 start_time_realtime;
 
         public int fps_probe_size;
 

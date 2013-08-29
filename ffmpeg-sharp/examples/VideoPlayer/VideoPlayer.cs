@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
+using FFmpegSharp.Interop.Codec;
 using FFmpegSharp.Interop.Util;
 
 namespace FFmpegSharp.Examples.VideoPlayer
@@ -17,10 +19,24 @@ namespace FFmpegSharp.Examples.VideoPlayer
 
             foreach (DecoderStream stream in file.Streams)
             {
-                VideoDecoderStream videoStream = stream as VideoDecoderStream;
+                var videoStream = stream as VideoDecoderStream;
+
+                //for (var i = 0; i < 100; i++)
+                //{
+                //    if (videoStream != null)
+                //    {
+                //        var buffer = new byte[videoStream.FrameSize];
+                //        var frameRead = videoStream.ReadFrame(out buffer);
+                //        Bitmap frame = new Bitmap();
+                //        //var image = new AVFrame()
+                //        //image.data=
+                //        //m_videoSurface.Parent.BackgroundImage
+                //    }
+                //}
+
                 if (videoStream != null)
                     m_videoSurface.Stream = new VideoScalingStream(videoStream, m_videoSurface.ClientRectangle.Width,
-                                                                   m_videoSurface.ClientRectangle.Height, PixelFormat.PIX_FMT_RGB32);
+                                                                   m_videoSurface.ClientRectangle.Height, PixelFormat.PIX_FMT_BGRA);
             }
         }
 
