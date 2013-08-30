@@ -65,11 +65,43 @@ namespace FFmpegSharp
         {
             get
             {
-                if (m_avStream.avg_frame_rate.den > 0 && m_avStream.avg_frame_rate.num > 0)
-                    return m_avStream.avg_frame_rate;
+
+                // http://ffmpeg.org/pipermail/libav-user/2013-May/004715.html
+                // not a nice solution... but I have yet to find enough information to make a better educated one
+
+                if (m_avCodecCtx.codec_id == AVCodecID.CODEC_ID_H264) //mp4
+                {
+                    return CalculateFrameRate(m_avStream.avg_frame_rate);
+                }
+                else if (m_avCodecCtx.codec_id == AVCodecID.CODEC_ID_MJPEG)
+                {
+                    return CalculateFrameRate(m_avStream.r_frame_rate);
+                }
+                else if (m_avCodecCtx.codec_id == AVCodecID.CODEC_ID_FLV1)
+                {
+                    return CalculateFrameRate(m_avStream.r_frame_rate);
+                }
+                else if (m_avCodecCtx.codec_id == AVCodecID.CODEC_ID_WMV3)
+                {
+                    return CalculateFrameRate(m_avStream.r_frame_rate);
+                }
+                else if (m_avCodecCtx.codec_id == AVCodecID.CODEC_ID_MPEG4) //3gp
+                {
+                    return CalculateFrameRate(m_avStream.r_frame_rate);
+                }
                 else
-                    return 1 / m_avCodecCtx.time_base;
+                {
+                    return CalculateFrameRate(m_avStream.r_frame_rate);
+                }
             }
+        }
+
+        private double CalculateFrameRate(AVRational framerate)
+        {
+            if (framerate.den > 0 && framerate.num > 0)
+                return framerate;
+
+            return 1 / m_avCodecCtx.time_base;
         }
 
         public long FrameCount
@@ -136,7 +168,7 @@ namespace FFmpegSharp
                 m_bufferUsedSize = 0;
             else
                 m_bufferUsedSize = FFmpeg.avpicture_layout((AVPicture*)m_avFrame, PixelFormat, Width, Height, m_buffer, m_buffer.Length);
-            
+
             if (m_bufferUsedSize < 0)
                 throw new DecoderException("Error copying decoded frame into managed memory");
 
