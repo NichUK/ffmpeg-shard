@@ -65,8 +65,8 @@ namespace FFmpegSharp
         {
             get
             {
-                if (m_avStream.r_frame_rate.den > 0 && m_avStream.r_frame_rate.num > 0)
-                    return m_avStream.r_frame_rate;
+                if (m_avStream.avg_frame_rate.den > 0 && m_avStream.avg_frame_rate.num > 0)
+                    return m_avStream.avg_frame_rate;
                 else
                     return 1 / m_avCodecCtx.time_base;
             }
