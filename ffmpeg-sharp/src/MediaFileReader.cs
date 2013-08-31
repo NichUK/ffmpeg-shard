@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace FFmpegSharp
 {
-    public unsafe class MediaFileReader : IDisposable
+    public class MediaFileReader : IDisposable
     {
         internal AVFormatContext FormatContext;
         private bool m_disposed = false;
