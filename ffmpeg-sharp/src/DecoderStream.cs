@@ -38,7 +38,7 @@ namespace FFmpegSharp
     {
         #region Fields
 
-        protected MediaFile m_file;
+        protected MediaFileReader m_file;
         protected AVCodecContext m_avCodecCtx;
         protected AVStream m_avStream;
         protected uint m_streamIdx;
@@ -115,7 +115,7 @@ namespace FFmpegSharp
 
         #region Constructors / destructor
 
-        public DecoderStream(MediaFile file, AVStream* stream)
+        public DecoderStream(MediaFileReader file, AVStream* stream)
         {
             // Initialize instance variables
             m_disposed = false;
@@ -136,7 +136,7 @@ namespace FFmpegSharp
             m_codecOpen = true;
         }
 
-        public DecoderStream(MediaFile file, ref AVStream stream)
+        public DecoderStream(MediaFileReader file, ref AVStream stream)
         {
             // Initialize instance variables
             m_disposed = false;

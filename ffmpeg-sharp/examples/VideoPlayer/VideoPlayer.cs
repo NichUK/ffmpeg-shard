@@ -15,7 +15,7 @@ namespace FFmpegSharp.Examples.VideoPlayer
 
         private void m_btnPlay_Click(object sender, EventArgs e)
         {
-            MediaFile file = new MediaFile(m_txtPath.Text);
+            MediaFileReader file = new MediaFileReader(m_txtPath.Text);
 
             foreach (DecoderStream stream in file.Streams)
             {

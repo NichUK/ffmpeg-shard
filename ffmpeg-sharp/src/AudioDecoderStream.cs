@@ -35,7 +35,7 @@ namespace FFmpegSharp
 {
     public unsafe class AudioDecoderStream : DecoderStream, IAudioStream
     {
-        internal AudioDecoderStream(MediaFile file, ref AVStream stream)
+        internal AudioDecoderStream(MediaFileReader file, ref AVStream stream)
             : base(file, ref stream)
         {
             m_buffer = new byte[FFmpeg.AVCODEC_MAX_AUDIO_FRAME_SIZE];

@@ -135,7 +135,7 @@ namespace FFmpegSharp
         /// Constructs a new VideoDecoderStream over a specific filename.
         /// </summary>
         /// <param name="Filename">File to decode</param>
-        internal VideoDecoderStream(MediaFile file, ref AVStream stream)
+        internal VideoDecoderStream(MediaFileReader file, ref AVStream stream)
             : base(file, ref stream)
         {
             // allocate video frame
