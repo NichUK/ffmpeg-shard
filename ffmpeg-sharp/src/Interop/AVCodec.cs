@@ -96,7 +96,7 @@ namespace FFmpegSharp.Interop
         /// <param name="height">the height of the picture</param>
         /// <returns>0 on success, &lt0 if invalid</returns>        
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int avpicture_alloc(out AVPicture picture, PixelFormat pix_fmt, int width, int height);
+        public static extern AVError avpicture_alloc(out AVPicture picture, PixelFormat pix_fmt, int width, int height);
 
         /// <summary>
         /// Free a picture previously allocated by avpicture_alloc()
@@ -389,6 +389,7 @@ namespace FFmpegSharp.Interop
         /// <seealso cref="avcodec_alloc_context"/>
         /// <seealso cref="avcodec_find_decoder"/>
         /// <seealso cref="avcodec_find_encoder"/>
+        [Obsolete]
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_open(ref AVCodecContext pAVCodecContext, AVCodec* pAVCodec);
 
@@ -596,6 +597,7 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVFrame">The input picture to encode</param>
         /// <returns>On error a negative value is returned, on success zero or the number
         /// of bytes used from the input buffer.</returns>
+        [Obsolete]
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int avcodec_encode_video(ref AVCodecContext pAVCodecContext, [In, Out]byte[] buf, int buf_size,
                                             ref AVFrame pAVFrame);
@@ -748,10 +750,24 @@ namespace FFmpegSharp.Interop
          * frame rate
          */
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int av_parse_video_frame_rate(ref AVRational frame_rate,
-                                      string str);
+        public static extern int av_parse_video_frame_rate(ref AVRational frame_rate, string str);
 #endif
 
+
+
+        // Nich's Additions
+
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern string avcodec_get_name(AVCodecID codecId);
+
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern AVError av_samples_alloc_array_and_samples(ref Byte** audio_data, ref int linesize,
+                                                                    int nb_channels, int nb_samples, AVSampleFormat sample_fmt, int align);
+
+        
+        
+        // /Nich's Additions
+        
         #endregion
 
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -760,6 +776,35 @@ namespace FFmpegSharp.Interop
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void av_free_packet(ref AVPacket pkt);
 
+        /// <summary>
+        /// Initialize the AVCodecContext to use the given AVCodec. 
+        /// Prior to using this function the context has to be allocated with avcodec_alloc_context3().
+        /// The functions avcodec_find_decoder_by_name(), avcodec_find_encoder_by_name(), avcodec_find_decoder() 
+        /// and avcodec_find_encoder() provide an easy way for retrieving a codec.
+        /// Warning! This function is not thread safe!
+        /// </summary>
+        /// <param name="pAVCodecContext">The context to initialize. </param>
+        /// <param name="pAVCodec">The codec to open this context for. If a non-NULL codec has been previously passed to avcodec_alloc_context3() or avcodec_get_context_defaults3() for this context, then this parameter MUST be either NULL or equal to the previously passed codec. </param>
+        /// <param name="options">A dictionary filled with AVCodecContext and codec-private options. On return this object will be filled with options that were not found.</param>
+        /// <returns>zero on success, a negative value on error</returns>
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern AVError avcodec_open2(AVCodecContext* pAVCodecContext, ref AVCodec pAVCodec, AVDictionary** options);
+
+        /// <summary>
+        /// Encode a frame of video. 
+        /// Takes input raw video data from frame and writes the next output packet, if available, to avpkt. 
+        /// The output packet does not necessarily contain data for the most recent frame, 
+        /// as encoders can delay and reorder input frames internally as needed.
+        /// If this function fails or produces no output, avpkt will be freed using av_free_packet() 
+        /// (i.e. avpkt->destruct will be called to free the user supplied buffer). 
+        /// </summary>
+        /// <param name="avctx">codec context </param>
+        /// <param name="avpkt">output AVPacket. The user can supply an output buffer by setting avpkt->data and avpkt->size prior to calling the function, but if the size of the user-provided data is not large enough, encoding will fail. All other AVPacket fields will be reset by the encoder using av_init_packet(). If avpkt->data is NULL, the encoder will allocate it. The encoder will set avpkt->size to the size of the output packet. The returned data (if any) belongs to the caller, he is responsible for freeing it.</param>
+        /// <param name="frame">AVFrame containing the raw video data to be encoded. May be NULL when flushing an encoder that has the CODEC_CAP_DELAY capability set. </param>
+        /// <param name="got_packet_ptr">This field is set to 1 by libavcodec if the output packet is non-empty, and to 0 if it is empty. If the function returns an error, the packet can be assumed to be invalid, and the value of got_packet_ptr is undefined and should not be used. </param>
+        /// <returns>0 on success, negative error code on failure</returns>
+        [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern AVError avcodec_encode_video2(AVCodecContext* avctx, AVPacket* avpkt, AVFrame*  frame, [MarshalAs(UnmanagedType.I2)] bool* got_packet_ptr);
 
         #region "Consts"
 
@@ -855,7 +900,11 @@ namespace FFmpegSharp.Interop
          * Independant Segment Decoding */
         /* /Fx */
         /* codec capabilities */
-        public const int CODEC_CAP_DRAW_HORIZ_BAND = 0x0001; // decoder can use draw_horiz_band callback
+
+        /// <summary>
+        /// decoder can use draw_horiz_band callback
+        /// </summary>
+        public const int CODEC_CAP_DRAW_HORIZ_BAND = 0x0001;
 
         /**
          * Codec uses get_buffer() for allocating buffers.
@@ -882,6 +931,62 @@ namespace FFmpegSharp.Interop
          * This can be used to prevent truncation of the last audio samples.
         */
         public const int CODEC_CAP_SMALL_LAST_FRAME = 0x0040;
+
+        /// <summary>
+        /// Codec can output multiple frames per AVPacket Normally demuxers return one frame at a time, demuxers which do not do are connected to a parser to split what they return into proper frames. 
+        /// </summary>
+        public const int CODEC_CAP_SUBFRAMES = 0x0100;
+ 
+        /// <summary>
+        /// Codec is experimental and is thus avoided in favor of non experimental encoders. 
+        /// </summary>
+        public const int CODEC_CAP_EXPERIMENTAL = 0x0200;
+
+        /// <summary>
+        /// Codec should fill in channel configuration and samplerate instead of container. 
+        /// </summary>
+        public const int CODEC_CAP_CHANNEL_CONF = 0x0400;
+
+        /// <summary>
+        /// Codec is able to deal with negative linesizes. 
+        /// </summary>
+        public const int CODEC_CAP_NEG_LINESIZES = 0x0800; 
+  
+        /// <summary>
+        /// Codec supports frame-level multithreading. 
+        /// </summary>
+        public const int CODEC_CAP_FRAME_THREADS = 0x1000;
+
+        /// <summary>
+        /// Codec supports slice-based (or partition-based) multithreading. 
+        /// </summary>
+        public const int CODEC_CAP_SLICE_THREADS = 0x2000;
+
+        /// <summary>
+        /// Codec supports changed parameters at any point. 
+        /// </summary>
+        public const int CODEC_CAP_PARAM_CHANGE = 0x4000;
+
+        /// <summary>
+        /// Codec supports avctx->thread_count == 0 (auto). 
+        /// </summary>
+        public const int CODEC_CAP_AUTO_THREADS = 0x8000;
+
+        /// <summary>
+        /// Audio encoder supports receiving a different number of samples in each call. 
+        /// </summary>
+        public const int CODEC_CAP_VARIABLE_FRAME_SIZE = 0x10000;
+
+        /// <summary>
+        /// Codec is intra only. 
+        /// </summary>
+        public const int CODEC_CAP_INTRA_ONLY = 0x40000000;
+
+        /// <summary>
+        /// Codec is lossless.
+        /// </summary>
+        public const uint CODEC_CAP_LOSSLESS = 0x80000000;
+
 
         //the following defines may change, don't expect compatibility if you use them
         public const int MB_TYPE_INTRA4x4 = 0x001;

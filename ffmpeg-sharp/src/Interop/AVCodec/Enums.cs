@@ -336,7 +336,7 @@ namespace FFmpegSharp.Interop.Codec
     }
 
     [Flags]
-    public enum CODEC_CAP
+    public enum CODEC_CAP : uint
     {
         DrawHorizBand = FFmpeg.CODEC_CAP_DRAW_HORIZ_BAND,
         DR1 = FFmpeg.CODEC_CAP_DR1,
@@ -344,7 +344,18 @@ namespace FFmpegSharp.Interop.Codec
         Truncated = FFmpeg.CODEC_CAP_TRUNCATED,
         HwAccel = FFmpeg.CODEC_CAP_HWACCEL,
         Delay = FFmpeg.CODEC_CAP_DELAY,
-        SmallLastFrame = FFmpeg.CODEC_CAP_SMALL_LAST_FRAME
+        SmallLastFrame = FFmpeg.CODEC_CAP_SMALL_LAST_FRAME,
+        SubFrames = FFmpeg.CODEC_CAP_SUBFRAMES,
+        Experimental = FFmpeg.CODEC_CAP_EXPERIMENTAL,
+        ChannelConf = FFmpeg.CODEC_CAP_CHANNEL_CONF,
+        NegLinesizes = FFmpeg.CODEC_CAP_NEG_LINESIZES,
+        FrameThreads = FFmpeg.CODEC_CAP_FRAME_THREADS,
+        SliceThreads = FFmpeg.CODEC_CAP_SLICE_THREADS,
+        ParamChange = FFmpeg.CODEC_CAP_PARAM_CHANGE,
+        AutoThreads = FFmpeg.CODEC_CAP_AUTO_THREADS,
+        VariableFrameSize = FFmpeg.CODEC_CAP_VARIABLE_FRAME_SIZE,
+        IntraOnly = FFmpeg.CODEC_CAP_INTRA_ONLY,
+        Lossless = FFmpeg.CODEC_CAP_LOSSLESS
     }
 
     public enum FF_PROFILE

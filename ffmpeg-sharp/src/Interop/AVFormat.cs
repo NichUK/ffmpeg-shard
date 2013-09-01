@@ -338,7 +338,7 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVPacket">the packet, which contains the stream_index, buf/buf_size, dts/pts, ...</param>
         /// <returns>1 if end of stream wanted, otherwise AVError</returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int av_interleaved_write_frame(ref AVFormatContext pAVFormatContext, ref AVPacket pAVPacket);
+        public static extern AVError av_interleaved_write_frame(ref AVFormatContext pAVFormatContext, ref AVPacket pAVPacket);
 
         /// <summary>
         /// Interleave a packet per DTS in an output media file.
@@ -394,6 +394,38 @@ namespace FFmpegSharp.Interop
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool av_filename_number_test(string filename);
+
+
+        //Nich Additions
+
+        /// <summary>
+        /// Allocate an AVFormatContext for an output format
+        /// avformat_free_context() can be used to free the context and everything allocated by the framework within it.
+        /// Examples: doc/examples/muxing.c.
+        /// </summary>
+        /// <param name="ctx">is set to the created format context, or to NULL in case of failure </param>
+        /// <param name="oformat">format to use for allocating the context, if NULL format_name and filename are used instead </param>
+        /// <param name="formatName">the name of output format to use for allocating the context, if NULL filename is used instead </param>
+        /// <param name="filename">the name of the filename to use for allocating the context, may be NULL </param>
+        /// <returns>>= 0 in case of success, a negative AVERROR code in case of failure </returns>
+        [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int avformat_alloc_output_context2(out AVFormatContext* ctx,  AVOutputFormat* oformat, string formatName, string filename);
+
+
+        /// <summary>
+        /// Add a new stream to a media file. 
+        /// When demuxing, it is called by the demuxer in read_header(). 
+        ///     If the flag AVFMTCTX_NOHEADER is set in s.ctx_flags, then it may also be called in read_packet().
+        /// When muxing, should be called by the user before avformat_write_header().
+        /// User is required to call avcodec_close() and avformat_free_context() to clean up the allocation by avformat_new_stream().
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="codec">If non-NULL, the AVCodecContext corresponding to the new stream will be initialized to use this codec. 
+        /// This is needed for e.g. codec-specific defaults to be set, so codec should be provided if it is known</param>
+        /// <returns>newly created stream or NULL on error. </returns>
+        [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern AVStream* avformat_new_stream(out AVFormatContext context, AVCodec* codec);
+
 
         #endregion
 
