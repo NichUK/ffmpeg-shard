@@ -91,4 +91,26 @@ namespace FFmpegSharp.Interop.Format.Context
 
         public int seek_count;
     };
+
+    /// <summary>
+    /// @name URL open modes
+    /// The flags argument to avio_open must be one of the following
+    /// constants, optionally ORed with other flags.
+    /// </summary>
+    [Flags]
+    public enum AvioFlags
+    {
+        /// <summary>
+        /// read-only
+        /// </summary>
+        AVIO_FLAG_READ = 1,                                      
+        /// <summary>
+        /// write-only
+        /// </summary>
+        AVIO_FLAG_WRITE =2,
+        /// <summary>
+        /// read-write pseudo flag
+        /// </summary>
+        AVIO_FLAG_READ_WRITE = (AVIO_FLAG_READ|AVIO_FLAG_WRITE)
+    }
 }

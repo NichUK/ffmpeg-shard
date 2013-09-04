@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FFmpegSharp.Interop.SWResample
 {
-    public unsafe struct DitherContext 
+    public unsafe struct DitherContext
     {
-        public SwrDitherType method;
+        public Enums.SwrDitherType method;
         public int noise_pos;
         public float scale;
         public float noise_scale;                              //< Noise scale
@@ -16,8 +16,11 @@ namespace FFmpegSharp.Interop.SWResample
         public float ns_scale;                                 //< Noise shaping dither scale
         public float ns_scale_1;                               //< Noise shaping dither scale^-1
         public int ns_pos;                                     //< Noise shaping dither position
-        public float ns_coeffs[NS_TAPS];                       //< Noise shaping filter coefficients
-        public float ns_errors[SWR_CH_MAX][2*NS_TAPS];
+        public fixed float ns_coeffs[SWResample.NS_TAPS];                       //< Noise shaping filter coefficients
+
+
+        //public float ns_errors[SWR_CH_MAX][2*NS_TAPS];
+        public fixed float ns_errors[SWResample.SWR_CH_MAX * (2 * SWResample.NS_TAPS)];
         public AudioData noise;                                //< noise used for dithering
         public AudioData temp;                                 //< temporary storage when writing into the input buffer isnt possible
         public int output_sample_bits;                         //< the number of used output bits, needed to scale dither correctly

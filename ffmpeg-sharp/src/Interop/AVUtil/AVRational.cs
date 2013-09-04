@@ -84,5 +84,10 @@ namespace FFmpegSharp.Interop.Util
         {
             return FFmpeg.av_d2q(d, max);
         }
+
+        public double ToDouble()
+        {
+            return num / (double)den;
+        }
     };
 }

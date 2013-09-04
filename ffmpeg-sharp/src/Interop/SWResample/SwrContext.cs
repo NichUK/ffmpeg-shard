@@ -10,11 +10,12 @@ using FFmpegSharp.Interop.Util;
 namespace FFmpegSharp.Interop.SWResample
 {
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct SwrContext {
+    public unsafe struct SwrContext
+    {
         /// <summary>
         /// AVClass used for AVOption and av_log()
         /// </summary>
-        public AVClass *av_class;
+        public AVClass* av_class;
 
         /// <summary>
         /// logging level offset
@@ -94,7 +95,7 @@ namespace FFmpegSharp.Interop.SWResample
         /// <summary>
         /// matrixed stereo encoding
         /// </summary>
-        public AVMatrixEncoding matrix_encoding;
+        public Enums.AVMatrixEncoding matrix_encoding;
 
         /// <summary>
         /// channel index (or -1 if muted channel) map
@@ -106,7 +107,7 @@ namespace FFmpegSharp.Interop.SWResample
         /// </summary>
         public int used_ch_count;
 
-        public SwrEngine engine;
+        public Enums.SwrEngine engine;
 
         public DitherContext dither;
 
@@ -133,7 +134,7 @@ namespace FFmpegSharp.Interop.SWResample
         /// <summary>
         /// swr resampling filter type 
         /// </summary>
-        public SwrFilterType filter_type;
+        public Enums.SwrFilterType filter_type;
 
         /// <summary>
         /// swr beta value for Kaiser window (only applicable if filter_type == AV_FILTER_TYPE_KAISER)
@@ -150,54 +151,79 @@ namespace FFmpegSharp.Interop.SWResample
         /// </summary>
         public int cheby;
 
-    public float min_compensation;                         //< swr minimum below which no compensation will happen
-    public float min_hard_compensation;                    //< swr minimum below which no silence inject / sample drop will happen
-    public float soft_compensation_duration;               //< swr duration over which soft compensation is applied
-    public float max_soft_compensation;                    //< swr maximum soft compensation in seconds over soft_compensation_duration
-    public float async;                                    //< swr simple 1 parameter async, similar to ffmpegs -async
-    public Int64 firstpts_in_samples;                      //< swr first pts in samples
+        public float min_compensation;                         //< swr minimum below which no compensation will happen
+        public float min_hard_compensation;                    //< swr minimum below which no silence inject / sample drop will happen
+        public float soft_compensation_duration;               //< swr duration over which soft compensation is applied
+        public float max_soft_compensation;                    //< swr maximum soft compensation in seconds over soft_compensation_duration
+        public float async;                                    //< swr simple 1 parameter async, similar to ffmpegs -async
+        public Int64 firstpts_in_samples;                      //< swr first pts in samples
 
-    public int resample_first;                             //< 1 if resampling must come first, 0 if rematrixing
-    public int rematrix;                                   //< flag to indicate if rematrixing is needed (basically if input and output layouts mismatch)
-    public int rematrix_custom;                            //< flag to indicate that a custom matrix has been defined
+        public int resample_first;                             //< 1 if resampling must come first, 0 if rematrixing
+        public int rematrix;                                   //< flag to indicate if rematrixing is needed (basically if input and output layouts mismatch)
+        public int rematrix_custom;                            //< flag to indicate that a custom matrix has been defined
 
-    public AudioData in;                                   //< input audio data
-    public AudioData postin;                               //< post-input audio data: used for rematrix/resample
-    public AudioData midbuf;                               //< intermediate audio data (postin/preout)
-    public AudioData preout;                               //< pre-output audio data: used for rematrix/resample
-    public AudioData out;                                  //< converted output audio data
-    public AudioData in_buffer;                            //< cached audio data (convert and resample purpose)
-    public AudioData silence;                              //< temporary with silence
-    public AudioData drop_temp;                            //< temporary used to discard output
-    public int in_buffer_index;                            //< cached buffer position
-    public int in_buffer_count;                            //< cached buffer length
-    public int resample_in_constraint;                     ///< 1 if the input end was reach before the output end, 0 otherwise
-    public int flushed;                                    ///< 1 if data is to be flushed and no further input is expected
-    public Int64 outpts;                                   //< output PTS
-    public Int64 firstpts;                                 //< first PTS
-    public int drop_output;                                //< number of output samples to drop
+        public AudioData @in;                                  //< input audio data
+        public AudioData postin;                               //< post-input audio data: used for rematrix/resample
+        public AudioData midbuf;                               //< intermediate audio data (postin/preout)
+        public AudioData preout;                               //< pre-output audio data: used for rematrix/resample
+        public AudioData @out;                                 //< converted output audio data
+        public AudioData in_buffer;                            //< cached audio data (convert and resample purpose)
+        public AudioData silence;                              //< temporary with silence
+        public AudioData drop_temp;                            //< temporary used to discard output
+        public int in_buffer_index;                            //< cached buffer position
+        public int in_buffer_count;                            //< cached buffer length
+        public int resample_in_constraint;                     //< 1 if the input end was reach before the output end, 0 otherwise
+        public int flushed;                                    //< 1 if data is to be flushed and no further input is expected
+        public Int64 outpts;                                   //< output PTS
+        public Int64 firstpts;                                 //< first PTS
+        public int drop_output;                                //< number of output samples to drop
 
-    public  AudioConvert *in_convert;                //< input conversion context
-    public  AudioConvert *out_convert;               //< output conversion context
-    public  AudioConvert *full_convert;              //< full conversion context (single conversion for input and output)
-    public  ResampleContext *resample;               //< resampling context
-    public  Resampler const *resampler;              //< resampler virtual function table
+        public AudioConvert* in_convert;                //< input conversion context
+        public AudioConvert* out_convert;               //< output conversion context
+        public AudioConvert* full_convert;              //< full conversion context (single conversion for input and output)
+        public ResampleContext* resample;               //< resampling context
+        public Resampler* resampler;                    //< resampler virtual function table
 
-    public float matrix[SWR_CH_MAX][SWR_CH_MAX];           //< floating point rematrixing coefficients
-    public uint8_t *native_matrix;
-    public uint8_t *native_one;
-    public uint8_t *native_simd_one;
-    public uint8_t *native_simd_matrix;
-    public int32_t matrix32[SWR_CH_MAX][SWR_CH_MAX];       //< 17.15 fixed point rematrixing coefficients
-    public uint8_t matrix_ch[SWR_CH_MAX][SWR_CH_MAX+1];    //< Lists of input channels per output channel that have non zero rematrixing coefficients
-    public mix_1_1_func_type *mix_1_1_f;
-    public mix_1_1_func_type *mix_1_1_simd;
+        /// <summary>
+        /// floating point rematrixing coefficients
+        /// </summary>
+        [MarshalAs(UnmanagedType.AsAny, SizeConst = SWResample.SWR_CH_MAX * SWResample.SWR_CH_MAX)]
+        public float[,] matrix;
+        //[SWResample.SWR_CH_MAX * SWResample.SWR_CH_MAX];
 
-    public mix_2_1_func_type *mix_2_1_f;
-    public mix_2_1_func_type *mix_2_1_simd;
+        public Byte* native_matrix;
+        public Byte* native_one;
+        public Byte* native_simd_one;
+        public Byte* native_simd_matrix;
 
-    public mix_any_func_type *mix_any_f;
+        /// <summary>
+        /// 17.15 fixed point rematrixing coefficients
+        /// </summary>
+        [MarshalAs(UnmanagedType.I4, SizeConst = SWResample.SWR_CH_MAX * SWResample.SWR_CH_MAX)]
+        public Int32[,] matrix32;
+        //[SWResample.SWR_CH_MAX * SWResample.SWR_CH_MAX] ;
 
-    /* TODO: callbacks for ASM optimizations */
-}
+
+        /// <summary>
+        /// Lists of input channels per output channel that have non zero rematrixing coefficients
+        /// </summary>
+        [MarshalAs(UnmanagedType.U1, SizeConst = SWResample.SWR_CH_MAX * SWResample.SWR_CH_MAX + 1)]
+        public Byte matrix_ch;
+        //[SWR_CH_MAX][SWR_CH_MAX+1]
+
+        //public mix_1_1_func_type* mix_1_1_f;
+        public IntPtr mix_1_1_f;
+        //public mix_1_1_func_type* mix_1_1_simd;
+        public IntPtr mix_1_1_simd;
+
+        //public mix_2_1_func_type* mix_2_1_f;
+        public IntPtr mix_2_1_f;
+        //public mix_2_1_func_type* mix_2_1_simd;
+        public IntPtr mix_2_1_simd;
+
+        //public mix_any_func_type* mix_any_f;
+        public IntPtr mix_any_f;
+
+        /* TODO: callbacks for ASM optimizations */
     }
+}

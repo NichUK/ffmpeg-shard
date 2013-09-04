@@ -39,8 +39,8 @@ namespace FFmpegSharp.Interop.Format
     [Obsolete("Use AVRational instead")]
     public unsafe struct AVFrac
     {
-        long val;
-        long num;
-        long den;
+        public long val;
+        public long num;
+        public long den;
     };
 }

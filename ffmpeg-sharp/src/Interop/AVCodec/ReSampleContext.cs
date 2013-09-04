@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 namespace FFmpegSharp.Interop.Codec
 {
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct ReSampleContext
+    public unsafe struct ResampleContext
     {
         // No public interface in avcodec.h
     }

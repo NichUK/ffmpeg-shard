@@ -41,14 +41,14 @@ namespace FFmpegSharp.Interop
         #region "Functions"
 
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern ReSampleContext* audio_resample_init(int output_channels, int input_channels,
+        public static extern ResampleContext* audio_resample_init(int output_channels, int input_channels,
                                                     int output_rate, int input_rate);
 
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int audio_resample(ref ReSampleContext pResampleContext, [In, Out]short[] output, [In, Out]short[] intput, int nb_samples);
+        public static extern int audio_resample(ref ResampleContext pResampleContext, [In, Out]short[] output, [In, Out]short[] intput, int nb_samples);
 
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void audio_resample_close(ref ReSampleContext pResampleContext);
+        public static extern void audio_resample_close(ref ResampleContext pResampleContext);
 
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVResampleContext* av_resample_init(int out_rate, int in_rate, int filter_length, int log2_phase_count, int linear, double cutoff);

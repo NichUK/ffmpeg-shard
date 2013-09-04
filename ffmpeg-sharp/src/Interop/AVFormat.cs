@@ -150,10 +150,10 @@ namespace FFmpegSharp.Interop
 
             return err;
         }
-        
+
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void avformat_close_input(ref IntPtr ppAvFormatCtx);
-        
+
         public unsafe static void avformat_close_input(ref AVFormatContext s)
         {
             fixed (AVFormatContext* avc = &s)
@@ -185,7 +185,7 @@ namespace FFmpegSharp.Interop
         /// @todo Let the user decide somehow what information is needed so that
         /// we do not waste time getting stuff the user does not need.
         /// </remarks>
-         
+
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVError avformat_find_stream_info(ref AVFormatContext pAVFormatContext, AVDictionary** options);
 
@@ -409,7 +409,7 @@ namespace FFmpegSharp.Interop
         /// <param name="filename">the name of the filename to use for allocating the context, may be NULL </param>
         /// <returns>>= 0 in case of success, a negative AVERROR code in case of failure </returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int avformat_alloc_output_context2(out AVFormatContext* ctx,  AVOutputFormat* oformat, string formatName, string filename);
+        public static extern int avformat_alloc_output_context2(out AVFormatContext ctx, AVOutputFormat* oformat, string formatName, string filename);
 
 
         /// <summary>
@@ -426,6 +426,34 @@ namespace FFmpegSharp.Interop
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern AVStream* avformat_new_stream(out AVFormatContext context, AVCodec* codec);
 
+        /// <summary>
+        /// Create and initialize a AVIOContext for accessing the resource indicated by url. 
+        /// Note: When the resource indicated by url has been opened in read+write mode, the AVIOContext can be used only for writing.
+        /// </summary>
+        /// <param name="s">Used to return the pointer to the created AVIOContext. In case of failure the pointed to value is set to NULL. </param>
+        /// <param name="filename">filename</param>
+        /// <param name="flags">flags which control how the resource indicated by url is to be opened </param>
+        /// <returns>0 in case of success, a negative value corresponding to an AVERROR code in case of failure </returns>
+        [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern AVError avio_open(ref AVIOContext* s, string filename, AvioFlags flags);
+
+
+        /// <summary>
+        /// Close the resource accessed by the AVIOContext s and free it.
+        /// This function can only be used if s was opened by avio_open().
+        /// 
+        /// The internal buffer is automatically flushed before closing the resource
+        /// </summary>
+        /// <returns>return 0 on success, an AVERROR &lt; 0 on error.</returns>
+        [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern AVError avio_close(AVIOContext* s);
+
+        /// <summary>
+        /// Free an AVFormatContext and all its streams. 
+        /// </summary>
+        /// <param name="s">context to free </param>
+        [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void avformat_free_context(AVFormatContext* s);
 
         #endregion
 
@@ -473,7 +501,7 @@ namespace FFmpegSharp.Interop
         public const uint AVFMTCTX_NOHEADER = 0x001;
 
         [Flags]
-        public enum AVSeekFlag: int
+        public enum AVSeekFlag : int
         {
             AVSEEK_FLAG_BACKWARD = 1,
             AVSEEK_FLAG_BYTE = 2,

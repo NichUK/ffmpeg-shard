@@ -156,6 +156,7 @@
     <None Include="AudioEncoderStream.cs">
       <SubType>Code</SubType>
     </None>
+    <Compile Include="EncoderException.cs" />
     <Compile Include="Interop\AVUtil.cs" />
     <Compile Include="FifoMemoryStream.cs" />
     <Compile Include="IAudioStream.cs" />
@@ -269,6 +270,13 @@
     <Compile Include="Interop\AVFormat\AVStream.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Interop\SWResample.cs" />
+    <Compile Include="Interop\SWResample\AudioConvert.cs" />
+    <Compile Include="Interop\SWResample\AudioData.cs" />
+    <Compile Include="Interop\SWResample\DitherContext.cs" />
+    <Compile Include="Interop\SWResample\Enums.cs" />
+    <Compile Include="Interop\SWResample\Resampler.cs" />
+    <Compile Include="Interop\SWResample\SwrContext.cs" />
     <Compile Include="Interop\SWScale\Enums.cs" />
     <Compile Include="Interop\SWScale\SwsContext.cs" />
     <Compile Include="Interop\SWScale\SwsFilter.cs" />

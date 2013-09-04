@@ -1,57 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using FFmpegSharp.Interop.Codec;
 using FFmpegSharp.Interop.Util;
 
 namespace FFmpegSharp.Interop.SWResample
 {
-
-    
-
     public unsafe class SWResample
     {
+        public const string SWRESAMPLE_DLL_NAME = "swresample-0.dll";
+
         //#if LIBSWRESAMPLE_VERSION_MAJOR < 1
         /// <summary>
         /// Maximum number of channels    
         /// </summary>
         public const int SWR_CH_MAX  = 32;   
         //#endif
+        public const int NS_TAPS = 20;
 
         private const int SWR_FLAG_RESAMPLE = 1; //< Force resampling even if equal sample rate
         //TODO use int resample ?
         //long term TODO can we enable this dynamically?
 
+        /// <summary>
+        /// Get the AVClass for swrContext. It can be used in combination with
+        /// AV_OPT_SEARCH_FAKE_OBJ for examining options.
+        /// @see av_opt_find().
+        /// </summary>
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern AVClass* swr_get_class();
 
+        /// <summary>
+        /// Allocate SwrContext.
+        /// 
+        /// If you use this function you will need to set the parameters (manually or
+        /// with swr_alloc_set_opts()) before calling swr_init().
+        /// 
+        /// @see swr_alloc_set_opts(), swr_init(), swr_free()
+        /// @return NULL on error, allocated context otherwise
+        /// </summary>
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        //public static extern SwrContext* swr_alloc();
+        internal static extern IntPtr swr_alloc();
 
-typedef struct SwrContext SwrContext;
+        public static SwrContext SwrAlloc()
+        {
+            var intPtr = swr_alloc();
+            return (SwrContext)Marshal.PtrToStructure (intPtr, typeof (SwrContext));
+        }
 
-/**
- * Get the AVClass for swrContext. It can be used in combination with
- * AV_OPT_SEARCH_FAKE_OBJ for examining options.
- *
- * @see av_opt_find().
- */
-const AVClass *swr_get_class(void);
-
-/**
- * Allocate SwrContext.
- *
- * If you use this function you will need to set the parameters (manually or
- * with swr_alloc_set_opts()) before calling swr_init().
- *
- * @see swr_alloc_set_opts(), swr_init(), swr_free()
- * @return NULL on error, allocated context otherwise
- */
-struct SwrContext *swr_alloc(void);
-
-/**
- * Initialize context after user parameters have been set.
- *
- * @return AVERROR error code in case of failure.
- */
-int swr_init(struct SwrContext *s);
+        /// <summary>
+        /// Initialize context after user parameters have been set.
+        /// 
+        /// @return AVERROR error code in case of failure.
+        /// </summary>
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_init(ref SwrContext s);
 
 /**
  * Allocate SwrContext if needed and set/reset common parameters.
@@ -73,15 +80,18 @@ int swr_init(struct SwrContext *s);
  * @see swr_init(), swr_free()
  * @return NULL on error, allocated context otherwise
  */
-public struct SwrContext *swr_alloc_set_opts(struct SwrContext *s,
-                                      int64_t out_ch_layout, enum AVSampleFormat out_sample_fmt, int out_sample_rate,
-                                      int64_t  in_ch_layout, enum AVSampleFormat  in_sample_fmt, int  in_sample_rate,
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        //return SwrContext*
+        public static extern IntPtr swr_alloc_set_opts(ref SwrContext s,
+                                      Int64 out_ch_layout, AVSampleFormat out_sample_fmt, int out_sample_rate,
+                                      Int64  in_ch_layout, AVSampleFormat  in_sample_fmt, int  in_sample_rate,
                                       int log_offset, void *log_ctx);
 
 /**
  * Free the given SwrContext and set the pointer to NULL.
  */
-void swr_free(struct SwrContext **s);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void swr_free(ref IntPtr s);
 
 /**
  * Convert audio.
@@ -101,8 +111,9 @@ void swr_free(struct SwrContext **s);
  *
  * @return number of samples output per channel, negative value on error
  */
-int swr_convert(struct SwrContext *s, uint8_t **out, int out_count,
-                                const uint8_t **in , int in_count);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_convert(ref SwrContext s, Byte **@out, int out_count,
+                                Byte **@in , int in_count);
 
 /**
  * Convert the next timestamp from input to output
@@ -117,12 +128,14 @@ int swr_convert(struct SwrContext *s, uint8_t **out, int out_count,
  * @param pts   timestamp for the next input sample, INT64_MIN if unknown
  * @return the output timestamp for the next output sample
  */
-int64_t swr_next_pts(struct SwrContext *s, int64_t pts);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Int64 swr_next_pts(ref SwrContext s, Int64 pts);
 
 /**
  * Activate resampling compensation.
  */
-int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_set_compensation(ref SwrContext s, int sample_delta, int compensation_distance);
 
 /**
  * Set a customized input channel mapping.
@@ -132,7 +145,8 @@ int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensatio
  *                    indexes, -1 for a muted channel)
  * @return AVERROR error code in case of failure.
  */
-int swr_set_channel_mapping(struct SwrContext *s, const int *channel_map);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_set_channel_mapping(ref SwrContext s, int *channel_map);
 
 /**
  * Set a customized remix matrix.
@@ -143,17 +157,20 @@ int swr_set_channel_mapping(struct SwrContext *s, const int *channel_map);
  * @param stride  offset between lines of the matrix
  * @return  AVERROR error code in case of failure.
  */
-int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_set_matrix(ref SwrContext s, double *matrix, int stride);
 
 /**
  * Drops the specified number of output samples.
  */
-int swr_drop_output(struct SwrContext *s, int count);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_drop_output(ref SwrContext s, int count);
 
 /**
  * Injects the specified number of silence samples.
  */
-int swr_inject_silence(struct SwrContext *s, int count);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int swr_inject_silence(ref SwrContext s, int count);
 
 /**
  * Gets the delay the next input sample will experience relative to the next output sample.
@@ -175,28 +192,32 @@ int swr_inject_silence(struct SwrContext *s, int count);
  *              an exact rounding free delay can be found by using LCM(in_sample_rate, out_sample_rate)
  * @returns     the delay in 1/base units.
  */
-int64_t swr_get_delay(struct SwrContext *s, int64_t base);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Int64 swr_get_delay(ref SwrContext s, Int64 @base);
 
 /**
  * Return the LIBSWRESAMPLE_VERSION_INT constant.
  */
-unsigned swresample_version(void);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern uint swresample_version();
 
 /**
  * Return the swr build-time configuration.
  */
-const char *swresample_configuration(void);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern char *swresample_configuration();
 
 /**
  * Return the swr license.
  */
-const char *swresample_license(void);
+        [DllImport(SWRESAMPLE_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern char *swresample_license();
 
 /**
  * @}
  */
 
-#endif /* SWRESAMPLE_SWRESAMPLE_H */
+        /* SWRESAMPLE_SWRESAMPLE_H */
 
     
     }

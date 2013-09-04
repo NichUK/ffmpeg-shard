@@ -50,6 +50,7 @@ namespace FFmpegSharp.Interop
         [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int sws_scale(SwsContext* context, byte** src, int* srcStride, int srcSliceY,
                                            int srcSliceH, byte** dst, int* dstStride);
+
         [DllImport(SWSCALE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         [Obsolete]
         public static extern int sws_scale_ordered(SwsContext* context, byte** src, int* srcStride, int srcSliceY,
