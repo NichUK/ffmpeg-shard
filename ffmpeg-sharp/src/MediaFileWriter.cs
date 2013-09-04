@@ -366,12 +366,12 @@ namespace FFmpegSharp
                     //          0, c->height, (byte**)dst_picture.data, dst_picture.linesize);
 
                     fixed (Byte* sourcePicData = src_picture.data)
-                    fixed (Byte* destPicData = dst_picture.data)
+                      fixed (Byte* destPicData = dst_picture.data)
                     {
                         //FFmpeg.sws_scale(sws_ctx, (byte**)src_picture.data, src_picture.linesize,
                         //    0, c->height, (byte**)dst_picture.data, dst_picture.linesize);
-                        FFmpeg.sws_scale(sws_ctx, &sourcePicData, src_picture.linesize,
-                            0, c->height, &destPicData, dst_picture.linesize);
+                        FFmpeg.sws_scale(sws_ctx, ref src_picture.data, src_picture.linesize,
+                            0, c->height, out dst_picture.data, dst_picture.linesize);
                     }
                 }
                 else
