@@ -40,7 +40,7 @@ namespace FFmpegSharp
             if (m_scalingContext == null)
                 throw new DecoderException("Error getting scaling context");
 
-            if (FFmpeg.avpicture_alloc(out m_outPict, this.PixelFormat, this.Width, this.Height) !=0)
+            if (FFmpeg.avpicture_alloc(out m_outPict, this.PixelFormat, this.Width, this.Height) != 0)
                 throw new DecoderException("Error allocating AVPicture");
 
             m_outPictAllocated = true;
@@ -94,6 +94,10 @@ namespace FFmpegSharp
                 AVPicture sourcePict;
                 int size = FFmpeg.avpicture_fill(out sourcePict, sourceFrame, m_source.PixelFormat, m_source.Width, m_source.Height);
                 Debug.Assert(size == sourceFrame.Length);
+
+                //if (FFmpeg.sws_scale(m_scalingContext, (byte**)&sourcePict.data[0], sourcePict.linesize, 0, m_source.Height,
+                //                     (byte**)&pOutPict->data[0], pOutPict->linesize) < 0)
+                
                 
                 if (FFmpeg.sws_scale(m_scalingContext, (byte**)&sourcePict.data[0], sourcePict.linesize, 0, m_source.Height,
                                      (byte**)&pOutPict->data[0], pOutPict->linesize) < 0)

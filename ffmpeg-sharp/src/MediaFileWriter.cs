@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FFmpegSharp.Interop;
@@ -135,9 +136,14 @@ namespace FFmpegSharp
             AVStream videoStream;
             if (videoStreamP != null)
             {
-                videoStream = (AVStream)videoStreamP;
+                videoStream = videoStreamP.GetValueOrDefault();
                 OpenVideo(ref outputContext, ref videoCodec, ref videoStream, ref src_picture, ref dst_picture);
             }
+
+            //fixed (AVPicture* sourcePicturePtr = &src_picture)
+            //fixed (AVPicture* destPicturePtr = &dst_picture)
+            //{
+
             //var audioStream = AddStream(ref outputContext, ref audioCodec, outputFormat.audio_codec);
             //OpenAudio(ref outputContext, ref audioCodec, ref audioStream);
 
@@ -162,7 +168,13 @@ namespace FFmpegSharp
             {
                 /* Compute current audio and video time. */
                 //audio_time = audio_st ? audio_st->pts.val * av_q2d(audio_st->time_base) : 0.0;
-                var videoTime = videoStreamP != null ? (videoStream.pts.val * videoStream.time_base.ToDouble()) : 0.0;
+                var videoTime = 0.0;
+                if (videoStreamP != null)
+                {
+                    var pts = videoStreamP.GetValueOrDefault().pts;
+                    var timebase = videoStreamP.GetValueOrDefault().time_base.ToDouble();
+                    videoTime = pts.val* timebase;
+                }
 
                 if //((!audio_st || audio_time >= STREAM_DURATION) &&
                     (videoStreamP != null || videoTime >= STREAM_DURATION) //)
@@ -176,23 +188,24 @@ namespace FFmpegSharp
                 //else
                 //{
 
-                WriteVideoFrame(ref outputContext, &videoStream, ref src_picture, ref dst_picture);
+                //WriteVideoFrame(ref outputContext, &videoStream, ref src_picture, ref dst_picture);
+                WriteVideoFrame(ref outputContext, &videoStream, &src_picture, &dst_picture);
+                //WriteVideoFrame(ref outputContext, &videoStream, sourcePicturePtr, destPicturePtr);
                 var codec = *videoStream.codec;
 
                 frame->pts += FFmpeg.av_rescale_q(1, codec.time_base, videoStream.time_base);
-
                 //}
             }
 
             /* Write the trailer, if any. The trailer must be written before you
-             * close the CodecContexts open when you wrote the header; otherwise
-             * av_write_trailer() may try to use memory that was freed on
-             * av_codec_close(). */
+         * close the CodecContexts open when you wrote the header; otherwise
+         * av_write_trailer() may try to use memory that was freed on
+         * av_codec_close(). */
             FFmpeg.av_write_trailer(ref outputContext);
 
             /* Close each codec. */
             if (videoStreamP != null)
-                CloseVideo(ref outputContext, &videoStream, ref src_picture, ref dst_picture);
+                CloseVideo(ref outputContext, &videoStream, &src_picture, &dst_picture);
             //if (audio_st)
             //    close_audio(oc, audio_st);
 
@@ -202,6 +215,7 @@ namespace FFmpegSharp
 
             /* free the stream */
             FFmpeg.avformat_free_context(&outputContext);
+            //}
         }
 
 
@@ -314,7 +328,7 @@ namespace FFmpegSharp
         }
 
         ///* Prepare a dummy image. */
-        static void fill_yuv_image(ref AVPicture pict, int frame_index, int width, int height)
+        static void fill_yuv_image(AVPicture* pict, int frame_index, int width, int height)
         {
             //    int x, y, i;
 
@@ -334,7 +348,7 @@ namespace FFmpegSharp
             //    }
         }
 
-        static unsafe void WriteVideoFrame(ref AVFormatContext oc, AVStream* st, ref AVPicture src_picture, ref AVPicture dst_picture)
+        static unsafe void WriteVideoFrame(ref AVFormatContext oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
         {
             AVError ret;
             SwsContext* sws_ctx = null;
@@ -360,23 +374,25 @@ namespace FFmpegSharp
 
 
                     //fill_yuv_image(ref src_picture, frame_count, c->width, c->height);
-                    fill_yuv_image(ref src_picture, frame_count, c->width, c->height);
+                    fill_yuv_image(src_picture, frame_count, c->width, c->height);
 
                     //FFmpeg.sws_scale(sws_ctx, (byte**)src_picture.data, src_picture.linesize,
                     //          0, c->height, (byte**)dst_picture.data, dst_picture.linesize);
 
-                    fixed (Byte* sourcePicData = src_picture.data)
-                      fixed (Byte* destPicData = dst_picture.data)
-                    {
-                        //FFmpeg.sws_scale(sws_ctx, (byte**)src_picture.data, src_picture.linesize,
-                        //    0, c->height, (byte**)dst_picture.data, dst_picture.linesize);
-                        FFmpeg.sws_scale(sws_ctx, ref src_picture.data, src_picture.linesize,
-                            0, c->height, out dst_picture.data, dst_picture.linesize);
-                    }
+                    //FFmpeg.sws_scale(sws_ctx, (byte**)src_picture.data, src_picture.linesize,
+                    //    0, c->height, (byte**)dst_picture.data, dst_picture.linesize);
+
+                    AVPicture source = *src_picture;
+                    AVPicture dest = *dst_picture;
+                    Byte* sourceData = source.data;
+                    Byte* destData = dest.data;
+
+                    FFmpeg.sws_scale(sws_ctx, &sourceData, src_picture->linesize,
+                        0, c->height, &destData, dst_picture->linesize);
                 }
                 else
                 {
-                    fill_yuv_image(ref dst_picture, frame_count, c->width, c->height);
+                    fill_yuv_image(dst_picture, frame_count, c->width, c->height);
                 }
             }
 
@@ -388,7 +404,7 @@ namespace FFmpegSharp
 
                 pkt.flags |= PacketFlags.Key;
                 pkt.stream_index = st->index;
-                pkt.data = new IntPtr(dst_picture.data[0]);
+                pkt.data = new IntPtr(dst_picture->data[0]);
                 pkt.size = sizeof(AVPicture);
 
                 ret = FFmpeg.av_interleaved_write_frame(ref oc, ref pkt);
@@ -423,11 +439,11 @@ namespace FFmpegSharp
             frame_count++;
         }
 
-        static void CloseVideo(ref AVFormatContext oc, AVStream* st, ref AVPicture src_picture, ref AVPicture dst_picture)
+        static void CloseVideo(ref AVFormatContext oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
         {
             FFmpeg.avcodec_close(ref *st->codec);
-            FFmpeg.av_free(&src_picture.data[0]);
-            FFmpeg.av_free(&dst_picture.data[0]);
+            FFmpeg.av_free(src_picture->data);
+            FFmpeg.av_free(dst_picture->data);
             FFmpeg.av_free(frame);
         }
 

@@ -10,4 +10,3 @@ G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\obj\Debug\FFmpegSharp.dll
 G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\obj\Debug\FFmpegSharp.pdb
 G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\FFmpegSharp.dll
 G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\bin\Debug\FFmpegSharp.pdb
-G:\Dev\ffmpeg-shard\ffmpeg-sharp\src\obj\Debug\FFmpegSharp.csprojResolveAssemblyReference.cache
