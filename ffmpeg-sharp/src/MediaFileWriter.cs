@@ -384,8 +384,8 @@ namespace FFmpegSharp
 
                     AVPicture source = *src_picture;
                     AVPicture dest = *dst_picture;
-                    Byte* sourceData = source.data;
-                    Byte* destData = dest.data;
+                    Byte* sourceData = (Byte*)source.data;
+                    Byte* destData = (Byte*) dest.data;
 
                     FFmpeg.sws_scale(sws_ctx, &sourceData, src_picture->linesize,
                         0, c->height, &destData, dst_picture->linesize);
