@@ -309,7 +309,7 @@ namespace FFmpegSharp.Interop
         /// </summary>
         /// <param name="pAVFormatContext">Media file handle</param>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern AVError avformat_write_header(ref AVFormatContext pAVFormatContext, AVDictionary** options);
+        public static extern AVError avformat_write_header(AVFormatContext *pAVFormatContext, AVDictionary** options);
 
         /// <summary>
         /// Write a packet to an output media file.
@@ -338,7 +338,7 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVPacket">the packet, which contains the stream_index, buf/buf_size, dts/pts, ...</param>
         /// <returns>1 if end of stream wanted, otherwise AVError</returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern AVError av_interleaved_write_frame(ref AVFormatContext pAVFormatContext, ref AVPacket pAVPacket);
+        public static extern AVError av_interleaved_write_frame( AVFormatContext *pAVFormatContext, ref AVPacket pAVPacket);
 
         /// <summary>
         /// Interleave a packet per DTS in an output media file.
@@ -363,10 +363,10 @@ namespace FFmpegSharp.Interop
         /// <param name="pAVFormatContext">media file handle</param>
         /// <returns>0 if OK. AVERROR_xxx if error.</returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int av_write_trailer(ref AVFormatContext pAVFormatContext);
+        public static extern int av_write_trailer(AVFormatContext *pAVFormatContext);
 
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void av_dump_format(ref AVFormatContext pAVFormatContext, int index, string url, int is_output);
+        public static extern void av_dump_format(AVFormatContext* pAVFormatContext, int index, string url, int is_output);
 
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern long av_gettime();
@@ -409,7 +409,7 @@ namespace FFmpegSharp.Interop
         /// <param name="filename">the name of the filename to use for allocating the context, may be NULL </param>
         /// <returns>>= 0 in case of success, a negative AVERROR code in case of failure </returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int avformat_alloc_output_context2(out AVFormatContext ctx, AVOutputFormat* oformat, string formatName, string filename);
+        public static extern int avformat_alloc_output_context2(out AVFormatContext* ctx, AVOutputFormat* oformat, string formatName, string filename);
 
 
         /// <summary>
@@ -424,7 +424,7 @@ namespace FFmpegSharp.Interop
         /// This is needed for e.g. codec-specific defaults to be set, so codec should be provided if it is known</param>
         /// <returns>newly created stream or NULL on error. </returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern AVStream* avformat_new_stream(out AVFormatContext context, AVCodec* codec);
+        public static extern AVStream* avformat_new_stream(AVFormatContext* context, AVCodec* codec);
 
         /// <summary>
         /// Create and initialize a AVIOContext for accessing the resource indicated by url. 
@@ -435,7 +435,7 @@ namespace FFmpegSharp.Interop
         /// <param name="flags">flags which control how the resource indicated by url is to be opened </param>
         /// <returns>0 in case of success, a negative value corresponding to an AVERROR code in case of failure </returns>
         [DllImport(AVFORMAT_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern AVError avio_open(ref AVIOContext* s, string filename, AvioFlags flags);
+        public static extern AVError avio_open(AVIOContext** s, string filename, AvioFlags flags);
 
 
         /// <summary>

@@ -33,12 +33,13 @@
             this.m_btnFile = new System.Windows.Forms.Button();
             this.m_dlgFile = new System.Windows.Forms.OpenFileDialog();
             this.m_videoSurface = new FFmpegSharp.Examples.VideoPlayerControl();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // m_txtPath
             // 
-            this.m_txtPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_txtPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.m_txtPath.Location = new System.Drawing.Point(12, 12);
             this.m_txtPath.Name = "m_txtPath";
             this.m_txtPath.Size = new System.Drawing.Size(269, 20);
@@ -67,9 +68,9 @@
             // 
             // m_videoSurface
             // 
-            this.m_videoSurface.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_videoSurface.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.m_videoSurface.Location = new System.Drawing.Point(12, 67);
             this.m_videoSurface.Name = "m_videoSurface";
             this.m_videoSurface.Size = new System.Drawing.Size(309, 229);
@@ -77,11 +78,22 @@
             this.m_videoSurface.TabIndex = 4;
             this.m_videoSurface.Text = "videoPlayerControl1";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(146, 38);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Test Record";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // VideoPlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(333, 308);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.m_videoSurface);
             this.Controls.Add(this.m_btnFile);
             this.Controls.Add(this.m_btnPlay);
@@ -100,6 +112,7 @@
         private System.Windows.Forms.Button m_btnFile;
         private System.Windows.Forms.OpenFileDialog m_dlgFile;
         private VideoPlayerControl m_videoSurface;
+        private System.Windows.Forms.Button button1;
     }
 }
 

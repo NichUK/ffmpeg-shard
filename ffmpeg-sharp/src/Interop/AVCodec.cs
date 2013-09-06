@@ -788,7 +788,7 @@ namespace FFmpegSharp.Interop
         /// <param name="options">A dictionary filled with AVCodecContext and codec-private options. On return this object will be filled with options that were not found.</param>
         /// <returns>zero on success, a negative value on error</returns>
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern AVError avcodec_open2(AVCodecContext* pAVCodecContext, ref AVCodec pAVCodec, AVDictionary** options);
+        public static extern AVError avcodec_open2(AVCodecContext* pAVCodecContext, AVCodec *pAVCodec, AVDictionary** options);
 
         /// <summary>
         /// Encode a frame of video. 

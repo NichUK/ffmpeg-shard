@@ -47,5 +47,12 @@ namespace FFmpegSharp.Examples.VideoPlayer
             if (d == DialogResult.OK)
                 m_txtPath.Text = m_dlgFile.FileName;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var mediaWriter = new MediaFileWriter("d:\\temp\\testwrite.mp4", null);
+            
+
+        }
     }
 }

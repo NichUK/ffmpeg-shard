@@ -102,24 +102,25 @@ namespace FFmpegSharp
 
             _filepath = filepath;
 
-            AVFormatContext outputContext;
-            AVOutputFormat* outputFormatPtr;
-            AVOutputFormat outputFormat;
+            AVFormatContext* outputContext;
+            AVOutputFormat* outputFormat;
 
 
             // allocate the output media context
-            if (FFmpeg.avformat_alloc_output_context2(out outputContext, null, null, filepath) < 0)
+            var iRet = FFmpeg.avformat_alloc_output_context2(out outputContext, null, null, filepath);
+            if (iRet < 0)
+            {
                 Debug.WriteLine("Could not deduce output format from file extension: using MPEG.");
-            if (FFmpeg.avformat_alloc_output_context2(out outputContext, null, "mpeg", filepath) < 0)
-                throw new EncoderException("Could not alloc output context");
+                if (FFmpeg.avformat_alloc_output_context2(out outputContext, null, "mpeg", filepath) < 0)
+                    throw new EncoderException("Could not alloc output context");
+            }
+            outputFormat = outputContext->oformat;
 
-            outputFormat = *outputContext.oformat;
-
-            var videoCodec = new AVCodec();
-            var audioCodec = new AVCodec();
+            AVCodec* videoCodec;
+            AVCodec* audioCodec;
 
             // Add the audio and video streams using the default format codecs and initialize the codecs.
-            if (outputFormat.video_codec == AVCodecID.CODEC_ID_NONE)
+            if (outputFormat->video_codec == AVCodecID.CODEC_ID_NONE)
                 throw new EncoderException("No Video Codec specified");
 
             //set up picture
@@ -127,19 +128,14 @@ namespace FFmpegSharp
             AVPicture dst_picture;
 
 
-            if (outputFormat.audio_codec == AVCodecID.CODEC_ID_NONE)
+            if (outputFormat->audio_codec == AVCodecID.CODEC_ID_NONE)
                 throw new EncoderException("No Audio Codec specified");
 
             // set the rest of the parameters for each stream, then open the audio and
             // video codecs and allocate the necessary encode buffers.
-            var videoStreamP = AddStream(ref outputContext, ref videoCodec, outputFormat.video_codec);
-            AVStream videoStream;
-            if (videoStreamP != null)
-            {
-                videoStream = videoStreamP.GetValueOrDefault();
-                OpenVideo(ref outputContext, ref videoCodec, ref videoStream, ref src_picture, ref dst_picture);
-            }
-
+            AVStream* videoStream = AddStream(outputContext, &videoCodec, outputFormat->video_codec);
+            OpenVideo(outputContext, videoCodec, videoStream, ref src_picture, ref dst_picture);
+            
             //fixed (AVPicture* sourcePicturePtr = &src_picture)
             //fixed (AVPicture* destPicturePtr = &dst_picture)
             //{
@@ -147,18 +143,18 @@ namespace FFmpegSharp
             //var audioStream = AddStream(ref outputContext, ref audioCodec, outputFormat.audio_codec);
             //OpenAudio(ref outputContext, ref audioCodec, ref audioStream);
 
-            FFmpeg.av_dump_format(ref outputContext, 0, filepath, 1);
+            FFmpeg.av_dump_format(outputContext, 0, filepath, 1);
 
             /* open the output file, if needed */
-            if (!Convert.ToBoolean(outputFormat.flags & FFmpeg.AVFMT_NOFILE))
+            if (!Convert.ToBoolean(outputFormat->flags & FFmpeg.AVFMT_NOFILE))
             {
-                ret = FFmpeg.avio_open(ref outputContext.pb, filepath, AvioFlags.AVIO_FLAG_WRITE);
+                ret = FFmpeg.avio_open(&outputContext->pb, filepath, AvioFlags.AVIO_FLAG_WRITE);
                 if (ret != AVError.OK)
                     throw new EncoderException(String.Format("Could not open '{0}': {1}", filepath, ret.ToString()));
             }
 
             /* Write the stream header, if any. */
-            ret = FFmpeg.avformat_write_header(ref outputContext, null);
+            ret = FFmpeg.avformat_write_header(outputContext, null);
             if (ret != AVError.OK)
                 throw new EncoderException("Error occurred when opening output file: {0}", ret.ToString());
 
@@ -169,15 +165,15 @@ namespace FFmpegSharp
                 /* Compute current audio and video time. */
                 //audio_time = audio_st ? audio_st->pts.val * av_q2d(audio_st->time_base) : 0.0;
                 var videoTime = 0.0;
-                if (videoStreamP != null)
+                if (videoStream != null)
                 {
-                    var pts = videoStreamP.GetValueOrDefault().pts;
-                    var timebase = videoStreamP.GetValueOrDefault().time_base.ToDouble();
-                    videoTime = pts.val* timebase;
+                    var pts = videoStream->pts;
+                    var timebase = videoStream->time_base.ToDouble();
+                    videoTime = pts.val * timebase;
                 }
 
                 if //((!audio_st || audio_time >= STREAM_DURATION) &&
-                    (videoStreamP != null || videoTime >= STREAM_DURATION) //)
+                    (videoStream == null || videoTime >= STREAM_DURATION) //)
                     break;
 
                 //* write interleaved audio and video frames */
@@ -189,11 +185,9 @@ namespace FFmpegSharp
                 //{
 
                 //WriteVideoFrame(ref outputContext, &videoStream, ref src_picture, ref dst_picture);
-                WriteVideoFrame(ref outputContext, &videoStream, &src_picture, &dst_picture);
+                WriteVideoFrame(outputContext, videoStream, &src_picture, &dst_picture);
                 //WriteVideoFrame(ref outputContext, &videoStream, sourcePicturePtr, destPicturePtr);
-                var codec = *videoStream.codec;
-
-                frame->pts += FFmpeg.av_rescale_q(1, codec.time_base, videoStream.time_base);
+                frame->pts += FFmpeg.av_rescale_q(1, videoStream->codec->time_base, videoStream->time_base);
                 //}
             }
 
@@ -201,80 +195,80 @@ namespace FFmpegSharp
          * close the CodecContexts open when you wrote the header; otherwise
          * av_write_trailer() may try to use memory that was freed on
          * av_codec_close(). */
-            FFmpeg.av_write_trailer(ref outputContext);
+            FFmpeg.av_write_trailer(outputContext);
 
             /* Close each codec. */
-            if (videoStreamP != null)
-                CloseVideo(ref outputContext, &videoStream, &src_picture, &dst_picture);
+            if (videoStream != null)
+                CloseVideo(outputContext, videoStream, &src_picture, &dst_picture);
             //if (audio_st)
             //    close_audio(oc, audio_st);
 
-            if (!Convert.ToBoolean(outputFormat.flags & FFmpeg.AVFMT_NOFILE))
+            if (!Convert.ToBoolean(outputFormat->flags & FFmpeg.AVFMT_NOFILE))
                 /* Close the output file. */
-                FFmpeg.avio_close(outputContext.pb);
+                FFmpeg.avio_close(outputContext->pb);
 
             /* free the stream */
-            FFmpeg.avformat_free_context(&outputContext);
+            FFmpeg.avformat_free_context(outputContext);
             //}
         }
 
 
-        private unsafe AVStream? AddStream(ref AVFormatContext formatContext, ref AVCodec codec, AVCodecID codecId)
+        private unsafe AVStream *AddStream(AVFormatContext* formatContextPtr, AVCodec** codec, AVCodecID codecId)
         {
 
+            AVCodecContext* cc;
+            AVStream* stream;   
+
             // find the encoder
-            var codecPtr = FFmpeg.avcodec_find_encoder(codecId);
-            if (codecPtr == null)
+            *codec = FFmpeg.avcodec_find_encoder(codecId);
+
+            if (codec == null)
                 throw new EncoderException(String.Format("Could not find encoder for '{0}'", FFmpeg.avcodec_get_name(codecId)));
 
-            codec = *codecPtr;
-
-            var streamPtr = FFmpeg.avformat_new_stream(out formatContext, codecPtr);
-            if (streamPtr == null)
+            stream = FFmpeg.avformat_new_stream(formatContextPtr, *codec);
+            if (stream == null)
                 return null;
 
-            var stream = *streamPtr;
+            stream->id = (int)formatContextPtr->nb_streams - 1;
+            cc = stream->codec;
 
-            stream.id = (int)formatContext.nb_streams - 1;
-            var codecContext = *stream.codec;
-
-            switch (codec.type)
+            switch ((*codec)->type)
             {
                 case AVMediaType.AVMEDIA_TYPE_AUDIO:
-                    codecContext.sample_fmt = AVSampleFormat.AV_SAMPLE_FMT_FLTP;
-                    codecContext.bit_rate = 64000;
-                    codecContext.sample_rate = 44100;
-                    codecContext.channels = 2;
+                    cc->sample_fmt = AVSampleFormat.AV_SAMPLE_FMT_FLTP;
+                    cc->bit_rate = 64000;
+                    cc->sample_rate = 44100;
+                    cc->channels = 2;
                     break;
 
                 case AVMediaType.AVMEDIA_TYPE_VIDEO:
-                    codecContext.codec_id = codecId;
-                    codecContext.bit_rate = 400000;
+                    cc->codec_id = codecId;
+                    cc->bit_rate = 400000;
 
                     // Resolution must be a multiple of two.
-                    codecContext.width = 352;
-                    codecContext.height = 288;
+                    cc->width = 352;
+                    cc->height = 288;
 
                     // timebase: This is the fundamental unit of time (in seconds) in terms
                     // of which frame timestamps are represented. For fixed-fps content,
                     // timebase should be 1/framerate and timestamp increments should be
                     // identical to 1.
-                    codecContext.time_base.den = STREAM_FRAME_RATE;
-                    codecContext.time_base.num = 1;
+                    cc->time_base.den = STREAM_FRAME_RATE;
+                    cc->time_base.num = 1;
                     // emit one intra frame every twelve frames at most
-                    codecContext.gop_size = 12;
-                    codecContext.pix_fmt = STREAM_PIX_FMT;
-                    if (codecContext.codec_id == AVCodecID.CODEC_ID_MPEG2VIDEO)
+                    cc->gop_size = 12;
+                    cc->pix_fmt = STREAM_PIX_FMT;
+                    if (cc->codec_id == AVCodecID.CODEC_ID_MPEG2VIDEO)
                     {
                         // just for testing, we also add B frames
-                        codecContext.max_b_frames = 2;
+                        cc->max_b_frames = 2;
                     }
-                    if (codecContext.codec_id == AVCodecID.CODEC_ID_MPEG1VIDEO)
+                    if (cc->codec_id == AVCodecID.CODEC_ID_MPEG1VIDEO)
                     {
                         /* Needed to avoid using macroblocks in which some coeffs overflow.             
                          * * This does not happen with normal video, it just happens here as             
                          * * the motion of the chroma plane does not match the luma plane. */
-                        codecContext.mb_decision = 2;
+                        cc->mb_decision = 2;
                     }
                     break;
 
@@ -283,8 +277,8 @@ namespace FFmpegSharp
             }
 
             // Some formats want stream headers to be separate.
-            if (Convert.ToBoolean(((uint)formatContext.oformat->flags) & FFmpeg.AVFMT_GLOBALHEADER))
-                codecContext.flags |= (CODEC_FLAG)FFmpeg.CODEC_FLAG_GLOBAL_HEADER;
+            if (Convert.ToBoolean(((uint)formatContextPtr->oformat->flags) & FFmpeg.AVFMT_GLOBALHEADER))
+                cc->flags |= (CODEC_FLAG)FFmpeg.CODEC_FLAG_GLOBAL_HEADER;
 
             return stream;
         }
@@ -293,13 +287,13 @@ namespace FFmpegSharp
         static AVFrame* frame;
         static int frame_count;
 
-        static void OpenVideo(ref AVFormatContext oc, ref AVCodec codec, ref AVStream st, ref AVPicture src_picture, ref AVPicture dst_picture)
+        static void OpenVideo(AVFormatContext* oc, AVCodec* codec, AVStream* st, ref AVPicture src_picture, ref AVPicture dst_picture)
         {
             AVError ret;
-            AVCodecContext* c = st.codec;
+            AVCodecContext* c = st->codec;
 
             /* open the codec */
-            ret = FFmpeg.avcodec_open2(c, ref codec, null);
+            ret = FFmpeg.avcodec_open2(c, codec, null);
             if (ret < 0)
                 throw new EncoderException(String.Format("Could not open video codec: {0}", ret.ToString()));
 
@@ -330,25 +324,27 @@ namespace FFmpegSharp
         ///* Prepare a dummy image. */
         static void fill_yuv_image(AVPicture* pict, int frame_index, int width, int height)
         {
-            //    int x, y, i;
+            int x, y, i;
 
-            //    i = frame_index;
+            i = frame_index;
 
-            //    /* Y */
-            //    for (y = 0; y < height; y++)
-            //        for (x = 0; x < width; x++)
-            //            pict->data[0][y * pict->linesize[0] + x] = x + y + i * 3;
+            /* Y */
+            for (y = 0; y < height; y++)
+                for (x = 0; x < width; x++)
+                    *(&pict->data[0]+(y * pict->linesize[0] + x)) = x + y + i * 3;
 
-            //    /* Cb and Cr */
-            //    for (y = 0; y < height / 2; y++) {
-            //        for (x = 0; x < width / 2; x++) {
-            //            pict->data[1][y * pict->linesize[1] + x] = 128 + y + i * 2;
-            //            pict->data[2][y * pict->linesize[2] + x] = 64 + x + i * 5;
-            //        }
-            //    }
+            /* Cb and Cr */
+            for (y = 0; y < height / 2; y++)
+            {
+                for (x = 0; x < width / 2; x++)
+                {
+                    *(&pict->data[1]+(y * pict->linesize[1] + x)) = 128 + y + i * 2;
+                    *(&pict->data[2]+(y * pict->linesize[2] + x)) = 64 + x + i * 5;
+                }
+            }
         }
 
-        static unsafe void WriteVideoFrame(ref AVFormatContext oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
+        static unsafe void WriteVideoFrame(AVFormatContext* oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
         {
             AVError ret;
             SwsContext* sws_ctx = null;
@@ -385,7 +381,7 @@ namespace FFmpegSharp
                     AVPicture source = *src_picture;
                     AVPicture dest = *dst_picture;
                     Byte* sourceData = (Byte*)source.data;
-                    Byte* destData = (Byte*) dest.data;
+                    Byte* destData = (Byte*)dest.data;
 
                     FFmpeg.sws_scale(sws_ctx, &sourceData, src_picture->linesize,
                         0, c->height, &destData, dst_picture->linesize);
@@ -396,7 +392,7 @@ namespace FFmpegSharp
                 }
             }
 
-            if (Convert.ToBoolean(oc.oformat->flags & FFmpeg.AVFMT_RAWPICTURE))
+            if (Convert.ToBoolean(oc->oformat->flags & FFmpeg.AVFMT_RAWPICTURE))
             {
                 /* Raw video case - directly store the picture in the packet */
                 var pkt = new AVPacket();
@@ -407,7 +403,7 @@ namespace FFmpegSharp
                 pkt.data = new IntPtr(dst_picture->data[0]);
                 pkt.size = sizeof(AVPicture);
 
-                ret = FFmpeg.av_interleaved_write_frame(ref oc, ref pkt);
+                ret = FFmpeg.av_interleaved_write_frame(oc, ref pkt);
             }
             else
             {
@@ -426,7 +422,7 @@ namespace FFmpegSharp
                     pkt.stream_index = st->index;
 
                     /* Write the compressed frame to the media file. */
-                    ret = FFmpeg.av_interleaved_write_frame(ref oc, ref pkt);
+                    ret = FFmpeg.av_interleaved_write_frame(oc, ref pkt);
                 }
                 else
                 {
@@ -439,7 +435,7 @@ namespace FFmpegSharp
             frame_count++;
         }
 
-        static void CloseVideo(ref AVFormatContext oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
+        static void CloseVideo(AVFormatContext* oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
         {
             FFmpeg.avcodec_close(ref *st->codec);
             FFmpeg.av_free(src_picture->data);

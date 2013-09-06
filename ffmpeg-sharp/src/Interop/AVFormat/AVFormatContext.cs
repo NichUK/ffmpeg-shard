@@ -62,7 +62,7 @@ namespace FFmpegSharp.Interop.Format
 
         public AVIOContext* pb;
 
-        public int ctx_flags;
+        public uint ctx_flags;
 
         public uint nb_streams;
         public AVStream** streams;
