@@ -804,7 +804,7 @@ namespace FFmpegSharp.Interop
         /// <param name="got_packet_ptr">This field is set to 1 by libavcodec if the output packet is non-empty, and to 0 if it is empty. If the function returns an error, the packet can be assumed to be invalid, and the value of got_packet_ptr is undefined and should not be used. </param>
         /// <returns>0 on success, negative error code on failure</returns>
         [DllImport(AVCODEC_DLL_NAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern AVError avcodec_encode_video2(AVCodecContext* avctx, AVPacket* avpkt, AVFrame*  frame, [MarshalAs(UnmanagedType.I2)] bool* got_packet_ptr);
+        public static extern AVError avcodec_encode_video2(AVCodecContext* avctx, AVPacket* avpkt, AVFrame*  frame, int* got_packet_ptr);
 
         #region "Consts"
 

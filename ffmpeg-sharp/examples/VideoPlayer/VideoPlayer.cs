@@ -50,7 +50,7 @@ namespace FFmpegSharp.Examples.VideoPlayer
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var mediaWriter = new MediaFileWriter("d:\\temp\\testwrite.mp4", null);
+            var mediaWriter = new MediaFileWriter("\\temp\\testwrite.mp4", null);
             
 
         }

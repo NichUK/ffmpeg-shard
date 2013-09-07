@@ -124,8 +124,8 @@ namespace FFmpegSharp
                 throw new EncoderException("No Video Codec specified");
 
             //set up picture
-            AVPicture src_picture;
-            AVPicture dst_picture;
+            AVPicture* src_picture = null;
+            AVPicture* dst_picture = null;
 
 
             if (outputFormat->audio_codec == AVCodecID.CODEC_ID_NONE)
@@ -134,7 +134,7 @@ namespace FFmpegSharp
             // set the rest of the parameters for each stream, then open the audio and
             // video codecs and allocate the necessary encode buffers.
             AVStream* videoStream = AddStream(outputContext, &videoCodec, outputFormat->video_codec);
-            OpenVideo(outputContext, videoCodec, videoStream, ref src_picture, ref dst_picture);
+            OpenVideo(outputContext, videoCodec, videoStream, src_picture, dst_picture);
             
             //fixed (AVPicture* sourcePicturePtr = &src_picture)
             //fixed (AVPicture* destPicturePtr = &dst_picture)
@@ -185,7 +185,7 @@ namespace FFmpegSharp
                 //{
 
                 //WriteVideoFrame(ref outputContext, &videoStream, ref src_picture, ref dst_picture);
-                WriteVideoFrame(outputContext, videoStream, &src_picture, &dst_picture);
+                WriteVideoFrame(outputContext, videoStream, src_picture, dst_picture);
                 //WriteVideoFrame(ref outputContext, &videoStream, sourcePicturePtr, destPicturePtr);
                 frame->pts += FFmpeg.av_rescale_q(1, videoStream->codec->time_base, videoStream->time_base);
                 //}
@@ -199,7 +199,7 @@ namespace FFmpegSharp
 
             /* Close each codec. */
             if (videoStream != null)
-                CloseVideo(outputContext, videoStream, &src_picture, &dst_picture);
+                CloseVideo(outputContext, videoStream, src_picture, dst_picture);
             //if (audio_st)
             //    close_audio(oc, audio_st);
 
@@ -287,7 +287,7 @@ namespace FFmpegSharp
         static AVFrame* frame;
         static int frame_count;
 
-        static void OpenVideo(AVFormatContext* oc, AVCodec* codec, AVStream* st, ref AVPicture src_picture, ref AVPicture dst_picture)
+        static void OpenVideo(AVFormatContext* oc, AVCodec* codec, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
         {
             AVError ret;
             AVCodecContext* c = st->codec;
@@ -303,7 +303,9 @@ namespace FFmpegSharp
                 throw new EncoderException("Could not allocate video frame");
 
             /* Allocate the encoded raw picture. */
-            ret = FFmpeg.avpicture_alloc(out dst_picture, c->pix_fmt, c->width, c->height);
+            AVPicture destPic;
+            ret = FFmpeg.avpicture_alloc(out destPic, c->pix_fmt, c->width, c->height);
+            dst_picture = &destPic;
             if (ret < 0)
                 throw new EncoderException(String.Format("Could not allocate picture: {0}", ret.ToString()));
 
@@ -312,36 +314,38 @@ namespace FFmpegSharp
              * output format. */
             if (c->pix_fmt != PixelFormat.PIX_FMT_YUV420P)
             {
-                ret = FFmpeg.avpicture_alloc(out src_picture, PixelFormat.PIX_FMT_YUV420P, c->width, c->height);
+                AVPicture sourcePic;
+                ret = FFmpeg.avpicture_alloc(out sourcePic, PixelFormat.PIX_FMT_YUV420P, c->width, c->height);
+                src_picture = &sourcePic;
                 if (ret < 0)
                     throw new EncoderException(String.Format("Could not allocate temporary picture: {0}", ret.ToString()));
             }
 
             /* copy data and linesize picture pointers to frame */
-            *((AVPicture*)frame) = dst_picture;
+            *((AVPicture*)frame) = *dst_picture;
         }
 
         ///* Prepare a dummy image. */
         static void fill_yuv_image(AVPicture* pict, int frame_index, int width, int height)
         {
-            int x, y, i;
+            //int x, y, i;
 
-            i = frame_index;
+            //i = frame_index;
 
-            /* Y */
-            for (y = 0; y < height; y++)
-                for (x = 0; x < width; x++)
-                    *(&pict->data[0]+(y * pict->linesize[0] + x)) = x + y + i * 3;
+            ///* Y */
+            //for (y = 0; y < height; y++)
+            //    for (x = 0; x < width; x++)
+            //        *(&pict->data[0]+(y * pict->linesize[0] + x)) = x + y + i * 3;
 
-            /* Cb and Cr */
-            for (y = 0; y < height / 2; y++)
-            {
-                for (x = 0; x < width / 2; x++)
-                {
-                    *(&pict->data[1]+(y * pict->linesize[1] + x)) = 128 + y + i * 2;
-                    *(&pict->data[2]+(y * pict->linesize[2] + x)) = 64 + x + i * 5;
-                }
-            }
+            ///* Cb and Cr */
+            //for (y = 0; y < height / 2; y++)
+            //{
+            //    for (x = 0; x < width / 2; x++)
+            //    {
+            //        *(&pict->data[1]+(y * pict->linesize[1] + x)) = 128 + y + i * 2;
+            //        *(&pict->data[2]+(y * pict->linesize[2] + x)) = 64 + x + i * 5;
+            //    }
+            //}
         }
 
         static unsafe void WriteVideoFrame(AVFormatContext* oc, AVStream* st, AVPicture* src_picture, AVPicture* dst_picture)
@@ -408,7 +412,7 @@ namespace FFmpegSharp
             else
             {
                 var pkt = new AVPacket();
-                bool got_packet;
+                int got_packet;
                 FFmpeg.av_init_packet(ref pkt);
 
                 /* encode the image */
@@ -417,7 +421,7 @@ namespace FFmpegSharp
                     throw new EncoderException("Error encoding video frame: {0}", ret.ToString());
 
                 /* If size is zero, it means the image was buffered. */
-                if (Convert.ToBoolean(ret != AVError.OK) && got_packet && (pkt.size > 0))
+                if (Convert.ToBoolean(ret != AVError.OK) && Convert.ToBoolean(got_packet) && (pkt.size > 0))
                 {
                     pkt.stream_index = st->index;
 
